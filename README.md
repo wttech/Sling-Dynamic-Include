@@ -116,11 +116,11 @@ Dynamic Include Filter can also replace dynamic components with AJAX tags, so th
 
 There are two cases: the first involves including a component which is available at some URL (eg. `/content/geometrixx/en/jcr:content/carousel.html`). In this case, component is replaced with include tag, and `nocache` selector is added `<!--#include virtual="/content/geometrixx/en/jcr:content/carousel.nocache.html">`. If the filter gets request with selector it'll pass it (using `doChain`) further without taking any action.
 
-![Plain include](src/main/doc/plain-include.png)
+![Plain include](https://raw.github.com/Cognifide/Sling-Dynamic-Include/master/src/main/doc/plain-include.png)
 
 There are also components which are created from so-called synthetic resources. Synthetic resource have some resourceType and path, but they don't have any node is JCR repository. An example is `/content/geometrixx/en/jcr:content/userinfo` component with `foundation/components/userinfo` resource type. These components return 404 error if you try to make a HTTP request. SDI recognizes these components and forms a different include URL for them in which resource type is added as a suffix. For example: `/content/geometrixx/en/jcr:content/userinfo.nocache.html/foundation/components/userinfo`. If filter got such request, it'll try to emulate `<sling:include>` JSP tag and includes resource with given type and `nocache` selector (eg. `/content/geometrixx/en/jcr:content/userinfo.nocache.html`). Selector is necessary, because otherwise filter would again replace component with a SSI tag.
 
-![Synthetic resource](src/main/doc/synthetic-include.png)
+![Synthetic resource](https://raw.github.com/Cognifide/Sling-Dynamic-Include/master/src/main/doc/synthetic-include.png)
 
 # Commercial Support
 
