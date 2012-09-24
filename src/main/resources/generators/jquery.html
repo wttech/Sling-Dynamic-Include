@@ -1,0 +1,8 @@
+<div id="${uniqueId}"></div>
+<script type="text/javascript">
+jQuery.get("${url}", 
+	function(data) {
+		jQuery("#${uniqueId}").replaceWith(data);
+	});
+</script>
+<noscript>Your browser does not support JavaScript. Some components may not be visible.</noscript>
