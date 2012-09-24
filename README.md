@@ -17,12 +17,12 @@ Components don't have to be modified in order to use this module (or even aware 
 
 Automated:
 
-* `mvn install -Psling` - build and install bundle on CQ instance running at http://localhost:4502
-* `mvn install -Psling -Dinstance.host=<host> -Dinstance.port=<port>` - build and install bundle on CQ instance running on custom host/port
+* `mvn package sling:install` - build and install bundle on CQ instance running at http://localhost:4502
+* `mvn package sling:install -Dsling.url=http://192.168.0.1:4503/system/console -Dsling.username=admin -Dsling.password=123` - build and install using custom server properties
 
 Manual:
 
-* `mvn install'
+* `mvn package`
 * open Felix console and install sling-caching-filter-<version>.jar bundle manually
 
 ## Configuration
