@@ -1,4 +1,4 @@
-# Dynamic Include Filter
+# Sling Dynamic Include
 
 ## Purpose
 
