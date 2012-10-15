@@ -1,4 +1,4 @@
-# Dynamic Include Filter
+# Sling Dynamic Include
 
 ## Purpose
 
@@ -120,7 +120,10 @@ There are two cases: the first involves including a component which is available
 
 There are also components which are created from so-called synthetic resources. Synthetic resource have some resourceType and path, but they don't have any node is JCR repository. An example is `/content/geometrixx/en/jcr:content/userinfo` component with `foundation/components/userinfo` resource type. These components return 404 error if you try to make a HTTP request. SDI recognizes these components and forms a different include URL for them in which resource type is added as a suffix. For example: `/content/geometrixx/en/jcr:content/userinfo.nocache.html/foundation/components/userinfo`. If filter got such request, it'll try to emulate `<sling:include>` JSP tag and includes resource with given type and `nocache` selector (eg. `/content/geometrixx/en/jcr:content/userinfo.nocache.html`). Selector is necessary, because otherwise filter would again replace component with a SSI tag.
 
-![Synthetic resource](https://raw.github.com/Cognifide/Sling-Dynamic-Include/master/src/main/doc/synthetic-include.png)
+# External resources
+
+* [SDI presentation](http://www.pro-vision.de/content/medialib/pro-vision/production/adaptto/2012/adaptto2012-sling-dynamic-include-tomasz-rekaweki-pdf/_jcr_content/renditions/rendition.file/adaptto2012-sling-dynamic-include-tomasz-rekaweki.pdf) on [adaptTo() 2012](http://www.pro-vision.de/de/adaptto/adaptto-2012.html)
+* [SDI blog](http://www.cognifide.com/blogs/cq/sling-dynamic-include/) post on the Cognifide website
 
 # Commercial Support
 
