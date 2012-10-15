@@ -29,6 +29,19 @@
 		<developerConnection>scm:git:git@github.com:Cognifide/Sling-Dynamic-Include.git</developerConnection>
 	</scm>
 
+	<developers>
+		<developer>
+			<id>paco</id>
+			<name>Przemyslaw Pakulski</name>
+			<email>przemo.pakulski@cognifide.com</email>
+		</developer>
+		<developer>
+			<id>trekawek</id>
+			<name>Tomasz Rekawek</name>
+			<email>tomasz.rekawek@cognifide.com</email>
+		</developer>
+	</developers>
+
 	<build>
 		<plugins>
 			<plugin>
