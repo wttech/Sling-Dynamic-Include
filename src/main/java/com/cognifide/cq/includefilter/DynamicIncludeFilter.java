@@ -154,6 +154,8 @@ public class DynamicIncludeFilter implements Filter {
 		if (enabled && (request instanceof SlingHttpServletRequest)) {
 			SlingHttpServletRequest slingRequest = (SlingHttpServletRequest) request;
 			SlingHttpServletResponse slingResponse = (SlingHttpServletResponse) response;
+            response.setCharacterEncoding(slingResponse.getCharacterEncoding());
+            response.setContentType(slingResponse.getContentType());
 
 			UrlManipulator url = new UrlManipulator(slingRequest, false);
 			ResourceState resourceState = ResourceState.getState(slingRequest, url, config);
