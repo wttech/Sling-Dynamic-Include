@@ -3,12 +3,12 @@ package com.cognifide.cq.includefilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.commons.osgi.OsgiUtil;
-import org.osgi.service.component.ComponentContext;
+import org.apache.sling.commons.osgi.PropertiesUtil;
 
 import com.cognifide.cq.includefilter.DynamicIncludeFilter.SupportedResourceTypes;
 
@@ -51,51 +51,52 @@ public class Configuration {
 	static final String PROPERTY_ONLY_INCLUDED = "include-filter.config.only-included";
 
 	static final boolean DEFAULT_ONLY_INCLUDED = true;
-	
+
 	private static final String RESOURCE_TYPES_ATTR = Configuration.class.getName() + ".resourceTypes";
 
-	// Properties read from configuration
-	private String includeSelector;
+	private final boolean isEnabled;
 
-	private String[] resourceTypes;
+	private final String includeSelector;
 
-	private String defaultExtension;
+	private final String[] resourceTypes;
 
-	private Boolean addComment;
+	private final String defaultExtension;
 
-	private String includeTypeName;
+	private final boolean addComment;
 
-	private Boolean skipWithParams;
+	private final String includeTypeName;
 
-	private Boolean onlyIncluded;
-	
-	private Set<SupportedResourceTypes> resourceTypeProviders;
+	private final boolean skipWithParams;
 
-	Configuration(ComponentContext context, Set<SupportedResourceTypes> resourceTypeProviders) {
-		resourceTypes = OsgiUtil.toStringArray(readProperty(context, PROPERTY_FILTER_RESOURCE_TYPES));
-		if (resourceTypes == null) {
-			resourceTypes = DEFAULT_FILTER_RESOURCE_TYPES;
+	private final boolean onlyIncluded;
+
+	private final Set<SupportedResourceTypes> resourceTypeProviders;
+
+	Configuration(Map<String, Object> properties, Set<SupportedResourceTypes> resourceTypeProviders) {
+		isEnabled = PropertiesUtil.toBoolean(properties.get(PROPERTY_FILTER_ENABLED), DEFAULT_FILTER_ENABLED);
+		String[] resourceTypeList;
+		resourceTypeList = PropertiesUtil.toStringArray(properties.get(PROPERTY_FILTER_RESOURCE_TYPES));
+		if (resourceTypeList == null) {
+			resourceTypeList = DEFAULT_FILTER_RESOURCE_TYPES;
 		}
-		String[] trimmedResourceTypes = new String[resourceTypes.length];
-		for (int i = 0; i < resourceTypes.length; i++) {
-			String[] s = resourceTypes[i].split(";");
+		for (int i = 0; i < resourceTypeList.length; i++) {
+			String[] s = resourceTypeList[i].split(";");
 			String name = s[0].trim();
-			trimmedResourceTypes[i] = name;
+			resourceTypeList[i] = name;
 		}
-		resourceTypes = trimmedResourceTypes;
+		this.resourceTypes = resourceTypeList;
 		this.resourceTypeProviders = resourceTypeProviders;
 
-		includeSelector = OsgiUtil.toString(readProperty(context, PROPERTY_FILTER_SELECTOR),
-				DEFAULT_FILTER_SELECTOR);
-		defaultExtension = OsgiUtil
-				.toString(readProperty(context, PROPERTY_DEFAULT_EXT), DEFAULT_DEFAULT_EXT);
-		addComment = OsgiUtil.toBoolean(readProperty(context, PROPERTY_ADD_COMMENT), DEFAULT_ADD_COMMENT);
-		includeTypeName = OsgiUtil.toString(readProperty(context, PROPERTY_INCLUDE_TYPE),
-				DEFAULT_INCLUDE_TYPE);
-		skipWithParams = OsgiUtil.toBoolean(readProperty(context, PROPERTY_SKIP_WITH_PARAMS),
-				DEFAULT_SKIP_WITH_PARAMS);
-		onlyIncluded = OsgiUtil.toBoolean(readProperty(context, PROPERTY_ONLY_INCLUDED),
-				DEFAULT_ONLY_INCLUDED);
+		includeSelector = PropertiesUtil.toString(PROPERTY_FILTER_SELECTOR, DEFAULT_FILTER_SELECTOR);
+		defaultExtension = PropertiesUtil.toString(PROPERTY_DEFAULT_EXT, DEFAULT_DEFAULT_EXT);
+		addComment = PropertiesUtil.toBoolean(PROPERTY_ADD_COMMENT, DEFAULT_ADD_COMMENT);
+		includeTypeName = PropertiesUtil.toString(PROPERTY_INCLUDE_TYPE, DEFAULT_INCLUDE_TYPE);
+		skipWithParams = PropertiesUtil.toBoolean(PROPERTY_SKIP_WITH_PARAMS, DEFAULT_SKIP_WITH_PARAMS);
+		onlyIncluded = PropertiesUtil.toBoolean(PROPERTY_ONLY_INCLUDED, DEFAULT_ONLY_INCLUDED);
+	}
+
+	public boolean hasIncludeSelector(SlingHttpServletRequest request) {
+		return ArrayUtils.contains(request.getRequestPathInfo().getSelectors(), includeSelector);
 	}
 
 	public String getIncludeSelector() {
@@ -105,47 +106,43 @@ public class Configuration {
 	public boolean isSupportedResourceType(String type, SlingHttpServletRequest request) {
 		@SuppressWarnings("unchecked")
 		List<String> cachedTypes = (List<String>) request.getAttribute(RESOURCE_TYPES_ATTR);
-		
-		if(cachedTypes == null) {
+
+		if (cachedTypes == null) {
 			cachedTypes = new ArrayList<String>();
 			cachedTypes.addAll(Arrays.asList(resourceTypes));
-			for(SupportedResourceTypes provider : resourceTypeProviders) {
+			for (SupportedResourceTypes provider : resourceTypeProviders) {
 				String[] providedResourceTypes = provider.getResourceTypes();
-				if(!ArrayUtils.isEmpty(providedResourceTypes)) {
+				if (!ArrayUtils.isEmpty(providedResourceTypes)) {
 					cachedTypes.addAll(Arrays.asList(providedResourceTypes));
 				}
 			}
 			request.setAttribute(RESOURCE_TYPES_ATTR, cachedTypes);
 		}
-		
+
 		return cachedTypes.contains(type);
 	}
-	
+
 	public String getDefaultExtension() {
 		return defaultExtension;
 	}
 
-	public Boolean getAddComment() {
+	public boolean getAddComment() {
 		return addComment;
-	}
-
-	static boolean isFilterEnabled(ComponentContext context) {
-		return OsgiUtil.toBoolean(readProperty(context, PROPERTY_FILTER_ENABLED), DEFAULT_FILTER_ENABLED);
-	}
-
-	private static Object readProperty(ComponentContext context, String name) {
-		return context.getProperties().get(name);
 	}
 
 	public String getIncludeTypeName() {
 		return includeTypeName;
 	}
 
-	public Boolean getSkipWithParams() {
+	public boolean getSkipWithParams() {
 		return skipWithParams;
 	}
 
-	public Boolean getOnlyIncluded() {
+	public boolean getOnlyIncluded() {
 		return onlyIncluded;
+	}
+
+	public boolean isEnabled() {
+		return isEnabled;
 	}
 }

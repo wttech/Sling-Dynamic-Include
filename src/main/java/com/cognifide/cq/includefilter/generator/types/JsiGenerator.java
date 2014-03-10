@@ -1,4 +1,4 @@
-package com.cognifide.cq.includefilter.generators.types;
+package com.cognifide.cq.includefilter.generator.types;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,7 +14,7 @@ import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cognifide.cq.includefilter.generators.IncludeGenerator;
+import com.cognifide.cq.includefilter.generator.IncludeGenerator;
 
 /**
  * Client side include generator - using Ajax/JQuery.

@@ -3,7 +3,6 @@ package com.cognifide.cq.includefilter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.request.RequestPathInfo;
 
@@ -14,8 +13,8 @@ import org.apache.sling.api.request.RequestPathInfo;
  * @author tomasz.rekawek
  * 
  */
-public class UrlManipulator {
-	private RequestPathInfo originalPathInfo;
+public class MutableUrl {
+	private final RequestPathInfo originalPathInfo;
 
 	private List<String> selectorsToRemove;
 
@@ -31,19 +30,11 @@ public class UrlManipulator {
 	
 	private boolean escapeNamespace;
 
-	public UrlManipulator(SlingHttpServletRequest request, boolean escapeNamespace) {
+	public MutableUrl(SlingHttpServletRequest request, boolean escapeNamespace) {
 		originalPathInfo = request.getRequestPathInfo();
 		selectorsToAdd = new ArrayList<String>();
 		selectorsToRemove = new ArrayList<String>();
 		this.escapeNamespace = escapeNamespace;
-	}
-
-	public boolean hasSelector(String selector) {
-		if (selectorsToAdd.contains(selector)) {
-			return true;
-		}
-
-		return ArrayUtils.contains(originalPathInfo.getSelectors(), selector);
 	}
 
 	public void addSelector(String selector) {
@@ -89,17 +80,6 @@ public class UrlManipulator {
 			resPath = resPath.substring(0, resPath.indexOf('.'));
 		}
 		return resPath;
-	}
-
-	/**
-	 * Get suffix from request URI and remove first slash.
-	 */
-	public String getResourceTypeFromSuffix() {
-		String suffix = originalPathInfo.getSuffix();
-		if (suffix != null && suffix.charAt(0) == '/') {
-			suffix = suffix.substring(1);
-		}
-		return suffix;
 	}
 
 	@Override

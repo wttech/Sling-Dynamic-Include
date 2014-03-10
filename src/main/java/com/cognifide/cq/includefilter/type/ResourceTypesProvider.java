@@ -1,4 +1,4 @@
-package com.cognifide.cq.includefilter.types;
+package com.cognifide.cq.includefilter.type;
 
 /**
  * This is interface which provides part of the resource types list for SDI.

@@ -1,4 +1,4 @@
-package com.cognifide.cq.includefilter.generators;
+package com.cognifide.cq.includefilter.generator;
 
 /**
  * Include generator interface

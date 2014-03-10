@@ -1,20 +1,20 @@
-package com.cognifide.cq.includefilter.generators.types;
+package com.cognifide.cq.includefilter.generator.types;
 
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Service;
 
-import com.cognifide.cq.includefilter.generators.IncludeGenerator;
+import com.cognifide.cq.includefilter.generator.IncludeGenerator;
 
 /**
- * Apache SSI include generator
+ * ESI include generator
  * 
  * @author tomasz.rekawek
  * 
  */
 @Component(immediate=true)
 @Service
-public class SsiGenerator implements IncludeGenerator {
-	private static final String GENERATOR_NAME = "SSI";
+public class EsiGenerator implements IncludeGenerator {
+	private static final String GENERATOR_NAME = "ESI";
 	
 	@Override
 	public String getType() {
@@ -24,9 +24,9 @@ public class SsiGenerator implements IncludeGenerator {
 	@Override
 	public String getInclude(String url) {
 		StringBuffer buf = new StringBuffer();
-		buf.append("<!--#include virtual=\"");
+		buf.append("<esi:include src=\"");
 		buf.append(url);
-		buf.append("\" -->");
+		buf.append("\"/>");
 		return buf.toString();
 	}
 }

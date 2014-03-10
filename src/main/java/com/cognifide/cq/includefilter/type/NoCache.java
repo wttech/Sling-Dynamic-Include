@@ -1,4 +1,4 @@
-package com.cognifide.cq.includefilter.types;
+package com.cognifide.cq.includefilter.type;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
