@@ -114,7 +114,7 @@ Dynamic Include Filter can also replace dynamic components with AJAX tags, so th
 
 ## Plain and synthetic resources
 
-There are two cases: the first involves including a component which is available at some URL (eg. `/content/geometrixx/en/jcr:content/carousel.html`). In this case, component is replaced with include tag, and `nocache` selector is added `<!--#include virtual="/content/geometrixx/en/jcr:content/carousel.nocache.html">`. If the filter gets request with selector it'll pass it (using `doChain`) further without taking any action.
+There are two cases: the first involves including a component which is available at some URL (eg. `/content/geometrixx/en/jcr:content/carousel.html`). In this case, component is replaced with include tag, and `nocache` selector is added `<!--#include virtual="/content/geometrixx/en/jcr:content/carousel.nocache.html" -->`. If the filter gets request with selector it'll pass it (using `doChain`) further without taking any action.
 
 ![Plain include](https://raw.github.com/Cognifide/Sling-Dynamic-Include/master/src/main/doc/plain-include.png)
 
@@ -124,6 +124,7 @@ There are also components which are created from so-called synthetic resources. 
 
 * [SDI presentation](http://www.pro-vision.de/content/medialib/pro-vision/production/adaptto/2012/adaptto2012-sling-dynamic-include-tomasz-rekaweki-pdf/_jcr_content/renditions/rendition.file/adaptto2012-sling-dynamic-include-tomasz-rekaweki.pdf) on [adaptTo() 2012](http://www.pro-vision.de/de/adaptto/adaptto-2012.html)
 * [SDI blog](http://www.cognifide.com/blogs/cq/sling-dynamic-include/) post on the Cognifide website
+* See the [Apache Sling website](http://sling.apache.org/) for the Sling reference documentation. Apache Sling, Apache and Sling are trademarks of the [Apache Software Foundation](http://apache.org).
 
 # Commercial Support
 
