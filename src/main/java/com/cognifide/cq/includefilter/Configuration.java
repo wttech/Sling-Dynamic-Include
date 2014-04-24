@@ -87,12 +87,12 @@ public class Configuration {
 		this.resourceTypes = resourceTypeList;
 		this.resourceTypeProviders = resourceTypeProviders;
 
-		includeSelector = PropertiesUtil.toString(PROPERTY_FILTER_SELECTOR, DEFAULT_FILTER_SELECTOR);
-		defaultExtension = PropertiesUtil.toString(PROPERTY_DEFAULT_EXT, DEFAULT_DEFAULT_EXT);
-		addComment = PropertiesUtil.toBoolean(PROPERTY_ADD_COMMENT, DEFAULT_ADD_COMMENT);
-		includeTypeName = PropertiesUtil.toString(PROPERTY_INCLUDE_TYPE, DEFAULT_INCLUDE_TYPE);
-		skipWithParams = PropertiesUtil.toBoolean(PROPERTY_SKIP_WITH_PARAMS, DEFAULT_SKIP_WITH_PARAMS);
-		onlyIncluded = PropertiesUtil.toBoolean(PROPERTY_ONLY_INCLUDED, DEFAULT_ONLY_INCLUDED);
+		includeSelector = PropertiesUtil.toString(properties.get(PROPERTY_FILTER_SELECTOR), DEFAULT_FILTER_SELECTOR);
+		defaultExtension = PropertiesUtil.toString(properties.get(PROPERTY_DEFAULT_EXT), DEFAULT_DEFAULT_EXT);
+		addComment = PropertiesUtil.toBoolean(properties.get(PROPERTY_ADD_COMMENT), DEFAULT_ADD_COMMENT);
+		includeTypeName = PropertiesUtil.toString(properties.get(PROPERTY_INCLUDE_TYPE), DEFAULT_INCLUDE_TYPE);
+		skipWithParams = PropertiesUtil.toBoolean(properties.get(PROPERTY_SKIP_WITH_PARAMS), DEFAULT_SKIP_WITH_PARAMS);
+		onlyIncluded = PropertiesUtil.toBoolean(properties.get(PROPERTY_ONLY_INCLUDED), DEFAULT_ONLY_INCLUDED);
 	}
 
 	public boolean hasIncludeSelector(SlingHttpServletRequest request) {
