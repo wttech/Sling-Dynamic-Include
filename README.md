@@ -1,4 +1,4 @@
-# Dynamic Include for Apache Sling
+# Sling Dynamic Include
 
 ## Purpose
 
