@@ -27,12 +27,12 @@ Add following dependency to your project:
 
 Filter is delivered as a standard OSGi bundle. There are following configuration options:
 
-* Enabled - enable SDI
-* Filter selector - selector used to get actual content
-* Resource types - which components should be replaced with tags
-* Include type - type of include tag (Apache SSI, ESI or Javascript)
-* Default extension - extension added with selector if there is no other extension
-* Add comment - adds debug comment: `<!-- Following component is included by DynamicIncludeFilter (path: %s ) -->` to every replaced component
+* **Enabled** - enable SDI
+* **Resource types** - which components should be replaced with tags
+* **Include type** - type of include tag (Apache SSI, ESI or Javascript)
+* **Add comment** - adds debug comment: `<!-- Following component is included by DynamicIncludeFilter (path: %s ) -->` to every replaced component
+* **Filter selector** - selector used to get actual content
+
 
 ## Compatibility with components
 
