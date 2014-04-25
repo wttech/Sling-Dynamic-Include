@@ -73,7 +73,7 @@ public class IncludeTagWritingProcessor implements RequestProcessor {
 		Resource resource = request.getResource();
 		MutableUrl url = new MutableUrl(request, true);
 
-		url.setDefaultExtension(config.getDefaultExtension());
+		url.setDefaultExtension("html");
 		url.addSelector(config.getIncludeSelector());
 		if (isSynthetic) {
 			url.replaceSuffix(resource.getResourceType());

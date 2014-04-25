@@ -64,11 +64,6 @@ import com.cognifide.cq.includefilter.type.ResourceTypesProvider;
 		label = "Enabled",
 		description = "Check to enable the filter"),
 	@Property(
-		name = Configuration.PROPERTY_FILTER_SELECTOR,
-		value = Configuration.DEFAULT_FILTER_SELECTOR,
-		label = "Filter selector",
-		description = "Selector used to mark included resources"),
-	@Property(
 		name = Configuration.PROPERTY_FILTER_RESOURCE_TYPES,
 		value = { "foundation/components/carousel", "foundation/components/userinfo" },
 		cardinality = Integer.MAX_VALUE,
@@ -84,15 +79,15 @@ import com.cognifide.cq.includefilter.type.ResourceTypesProvider;
 				@PropertyOption(name = "ESI", value="ESI"),
 				@PropertyOption(name = "JSI", value="Javascript")}),
 	@Property(
-		name = Configuration.PROPERTY_DEFAULT_EXT,
-		value = Configuration.DEFAULT_DEFAULT_EXT,
-		label = "Default extension",
-		description = "Default extension used with included resources"),
-	@Property(
 		name = Configuration.PROPERTY_ADD_COMMENT,
 		boolValue = Configuration.DEFAULT_ADD_COMMENT,
 		label = "Add comment",
-		description = "Add comment to included components")
+		description = "Add comment to included components"),
+	@Property(
+		name = Configuration.PROPERTY_FILTER_SELECTOR,
+		value = Configuration.DEFAULT_FILTER_SELECTOR,
+		label = "Filter selector",
+		description = "Selector used to mark included resources")
 })
 //@formatter:on
 public class DynamicIncludeFilter implements Filter {

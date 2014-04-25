@@ -36,10 +36,6 @@ public class Configuration {
 
 	static final String DEFAULT_INCLUDE_TYPE = "SSI";
 
-	static final String PROPERTY_DEFAULT_EXT = "include-filter.config.default-extension";
-
-	static final String DEFAULT_DEFAULT_EXT = "html";
-
 	static final String PROPERTY_ADD_COMMENT = "include-filter.config.add_comment";
 
 	static final boolean DEFAULT_ADD_COMMENT = false;
@@ -51,8 +47,6 @@ public class Configuration {
 	private final String includeSelector;
 
 	private final String[] resourceTypes;
-
-	private final String defaultExtension;
 
 	private final boolean addComment;
 
@@ -77,7 +71,6 @@ public class Configuration {
 
 		includeSelector = PropertiesUtil.toString(properties.get(PROPERTY_FILTER_SELECTOR),
 				DEFAULT_FILTER_SELECTOR);
-		defaultExtension = PropertiesUtil.toString(properties.get(PROPERTY_DEFAULT_EXT), DEFAULT_DEFAULT_EXT);
 		addComment = PropertiesUtil.toBoolean(properties.get(PROPERTY_ADD_COMMENT), DEFAULT_ADD_COMMENT);
 		includeTypeName = PropertiesUtil
 				.toString(properties.get(PROPERTY_INCLUDE_TYPE), DEFAULT_INCLUDE_TYPE);
@@ -108,10 +101,6 @@ public class Configuration {
 		}
 
 		return cachedTypes.contains(type);
-	}
-
-	public String getDefaultExtension() {
-		return defaultExtension;
 	}
 
 	public boolean getAddComment() {
