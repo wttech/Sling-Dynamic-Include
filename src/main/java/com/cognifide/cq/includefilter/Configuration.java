@@ -25,6 +25,9 @@ public class Configuration {
 
 	static final String PROPERTY_FILTER_RESOURCE_TYPES = "include-filter.config.resource-types";
 
+	static final String[] DEFAULT_FILTER_RESOURCE_TYPES = new String[] { "foundation/components/carousel",
+			"foundation/components/userinfo" };
+
 	static final String PROPERTY_FILTER_SELECTOR = "include-filter.config.selector";
 
 	static final String DEFAULT_FILTER_SELECTOR = "nocache";
@@ -41,17 +44,6 @@ public class Configuration {
 
 	static final boolean DEFAULT_ADD_COMMENT = false;
 
-	static final String[] DEFAULT_FILTER_RESOURCE_TYPES = new String[] { "foundation/components/carousel",
-			"foundation/components/userinfo" };
-
-	static final String PROPERTY_SKIP_WITH_PARAMS = "include-filter.config.skip-with-params";
-
-	static final boolean DEFAULT_SKIP_WITH_PARAMS = true;
-
-	static final String PROPERTY_ONLY_INCLUDED = "include-filter.config.only-included";
-
-	static final boolean DEFAULT_ONLY_INCLUDED = true;
-
 	private static final String RESOURCE_TYPES_ATTR = Configuration.class.getName() + ".resourceTypes";
 
 	private final boolean isEnabled;
@@ -65,10 +57,6 @@ public class Configuration {
 	private final boolean addComment;
 
 	private final String includeTypeName;
-
-	private final boolean skipWithParams;
-
-	private final boolean onlyIncluded;
 
 	private final Set<SupportedResourceTypes> resourceTypeProviders;
 
@@ -87,12 +75,12 @@ public class Configuration {
 		this.resourceTypes = resourceTypeList;
 		this.resourceTypeProviders = resourceTypeProviders;
 
-		includeSelector = PropertiesUtil.toString(properties.get(PROPERTY_FILTER_SELECTOR), DEFAULT_FILTER_SELECTOR);
+		includeSelector = PropertiesUtil.toString(properties.get(PROPERTY_FILTER_SELECTOR),
+				DEFAULT_FILTER_SELECTOR);
 		defaultExtension = PropertiesUtil.toString(properties.get(PROPERTY_DEFAULT_EXT), DEFAULT_DEFAULT_EXT);
 		addComment = PropertiesUtil.toBoolean(properties.get(PROPERTY_ADD_COMMENT), DEFAULT_ADD_COMMENT);
-		includeTypeName = PropertiesUtil.toString(properties.get(PROPERTY_INCLUDE_TYPE), DEFAULT_INCLUDE_TYPE);
-		skipWithParams = PropertiesUtil.toBoolean(properties.get(PROPERTY_SKIP_WITH_PARAMS), DEFAULT_SKIP_WITH_PARAMS);
-		onlyIncluded = PropertiesUtil.toBoolean(properties.get(PROPERTY_ONLY_INCLUDED), DEFAULT_ONLY_INCLUDED);
+		includeTypeName = PropertiesUtil
+				.toString(properties.get(PROPERTY_INCLUDE_TYPE), DEFAULT_INCLUDE_TYPE);
 	}
 
 	public boolean hasIncludeSelector(SlingHttpServletRequest request) {
@@ -132,14 +120,6 @@ public class Configuration {
 
 	public String getIncludeTypeName() {
 		return includeTypeName;
-	}
-
-	public boolean getSkipWithParams() {
-		return skipWithParams;
-	}
-
-	public boolean getOnlyIncluded() {
-		return onlyIncluded;
 	}
 
 	public boolean isEnabled() {

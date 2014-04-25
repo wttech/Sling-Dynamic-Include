@@ -38,10 +38,10 @@ public class IncludeTagWritingProcessor implements RequestProcessor {
 	public boolean accepts(SlingHttpServletRequest request) {
 		Object servletPath = request.getAttribute("javax.servlet.include.servlet_path");
 		Enumeration<?> params = request.getParameterNames();
-		if (config.getSkipWithParams() && params.hasMoreElements()) {
+		if (params.hasMoreElements()) {
 			return false;
 		}
-		if (config.getOnlyIncluded() && servletPath == null) {
+		if (servletPath == null) {
 			return false;
 		}
 		String resourceType = request.getResource().getResourceType();

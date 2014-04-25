@@ -92,17 +92,7 @@ import com.cognifide.cq.includefilter.type.ResourceTypesProvider;
 		name = Configuration.PROPERTY_ADD_COMMENT,
 		boolValue = Configuration.DEFAULT_ADD_COMMENT,
 		label = "Add comment",
-		description = "Add comment to included components"),
-	@Property(
-		name = Configuration.PROPERTY_SKIP_WITH_PARAMS,
-		boolValue = Configuration.DEFAULT_SKIP_WITH_PARAMS,
-		label = "Skip requests with params",
-		description = "Disable filter for request with parameters (eg. POST or index.html?parameter=1)"),
-	@Property(
-		name = Configuration.PROPERTY_ONLY_INCLUDED,
-		boolValue = Configuration.DEFAULT_ONLY_INCLUDED,
-		label = "Only included",
-		description = "Disable filter for direct HTTP requests for components")
+		description = "Add comment to included components")
 })
 //@formatter:on
 public class DynamicIncludeFilter implements Filter {
