@@ -5,12 +5,25 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.felix.scr.annotations.Activate;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Properties;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.PropertyOption;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.ReferenceCardinality;
+import org.apache.felix.scr.annotations.ReferencePolicy;
+import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.commons.osgi.PropertiesUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.cognifide.cq.includefilter.DynamicIncludeFilter.SupportedResourceTypes;
+import com.cognifide.cq.includefilter.type.NoCache;
+import com.cognifide.cq.includefilter.type.ResourceTypesProvider;
 
 /**
  * Include filter configuration.
@@ -18,7 +31,27 @@ import com.cognifide.cq.includefilter.DynamicIncludeFilter.SupportedResourceType
  * @author tomasz.rekawek
  * 
  */
+@Component(metatype = true, configurationFactory = true)
+@Service(Configuration.class)
+@Properties({
+		@Property(name = Configuration.PROPERTY_FILTER_ENABLED, boolValue = Configuration.DEFAULT_FILTER_ENABLED, label = "Enabled", description = "Check to enable the filter"),
+		@Property(name = Configuration.PROPERTY_FILTER_RESOURCE_TYPES, value = {
+				"foundation/components/carousel", "foundation/components/userinfo" }, cardinality = Integer.MAX_VALUE, label = "Resource types", description = "Filter will replace components with selected resource types"),
+		@Property(name = Configuration.PROPERTY_INCLUDE_TYPE, value = Configuration.DEFAULT_INCLUDE_TYPE, label = "Include type", description = "Type of generated include tags", options = {
+				@PropertyOption(name = "SSI", value = "Apache SSI"),
+				@PropertyOption(name = "ESI", value = "ESI"),
+				@PropertyOption(name = "JSI", value = "Javascript") }),
+		@Property(name = Configuration.PROPERTY_ADD_COMMENT, boolValue = Configuration.DEFAULT_ADD_COMMENT, label = "Add comment", description = "Add comment to included components"),
+		@Property(name = Configuration.PROPERTY_FILTER_SELECTOR, value = Configuration.DEFAULT_FILTER_SELECTOR, label = "Filter selector", description = "Selector used to mark included resources") })
+// @formatter:on
 public class Configuration {
+
+	private static final Logger LOG = LoggerFactory.getLogger(Configuration.class);
+
+	static final String PROPERTY_FILTER_PATH = "include-filter.config.path";
+
+	static final String DEFAULT_FILTER_PATH = "/content";
+
 	static final String PROPERTY_FILTER_ENABLED = "include-filter.config.enabled";
 
 	static final boolean DEFAULT_FILTER_ENABLED = false;
@@ -42,20 +75,25 @@ public class Configuration {
 
 	private static final String RESOURCE_TYPES_ATTR = Configuration.class.getName() + ".resourceTypes";
 
-	private final boolean isEnabled;
+	@Reference(referenceInterface = ResourceTypesProvider.class, cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE, policy = ReferencePolicy.DYNAMIC)
+	private Set<SupportedResourceTypes> resourceTypeProviders = new CopyOnWriteArraySet<SupportedResourceTypes>();
 
-	private final String includeSelector;
+	private boolean isEnabled;
 
-	private final String[] resourceTypes;
+	private String path;
 
-	private final boolean addComment;
+	private String includeSelector;
 
-	private final String includeTypeName;
+	private String[] resourceTypes;
 
-	private final Set<SupportedResourceTypes> resourceTypeProviders;
+	private boolean addComment;
 
-	Configuration(Map<String, Object> properties, Set<SupportedResourceTypes> resourceTypeProviders) {
+	private String includeTypeName;
+
+	@Activate
+	public void activate(Map<String, Object> properties) {
 		isEnabled = PropertiesUtil.toBoolean(properties.get(PROPERTY_FILTER_ENABLED), DEFAULT_FILTER_ENABLED);
+		path = PropertiesUtil.toString(properties.get(PROPERTY_FILTER_PATH), DEFAULT_FILTER_PATH);
 		String[] resourceTypeList;
 		resourceTypeList = PropertiesUtil.toStringArray(properties.get(PROPERTY_FILTER_RESOURCE_TYPES));
 		if (resourceTypeList == null) {
@@ -67,13 +105,16 @@ public class Configuration {
 			resourceTypeList[i] = name;
 		}
 		this.resourceTypes = resourceTypeList;
-		this.resourceTypeProviders = resourceTypeProviders;
 
 		includeSelector = PropertiesUtil.toString(properties.get(PROPERTY_FILTER_SELECTOR),
 				DEFAULT_FILTER_SELECTOR);
 		addComment = PropertiesUtil.toBoolean(properties.get(PROPERTY_ADD_COMMENT), DEFAULT_ADD_COMMENT);
 		includeTypeName = PropertiesUtil
 				.toString(properties.get(PROPERTY_INCLUDE_TYPE), DEFAULT_INCLUDE_TYPE);
+	}
+
+	public String getPath() {
+		return path;
 	}
 
 	public boolean hasIncludeSelector(SlingHttpServletRequest request) {
@@ -113,5 +154,52 @@ public class Configuration {
 
 	public boolean isEnabled() {
 		return isEnabled;
+	}
+
+	void bindResourceTypeProviders(ResourceTypesProvider provider) {
+		LOG.info("bind new provider: " + provider.getClass().getName());
+		resourceTypeProviders.add(new SupportedResourceTypes(provider));
+		LOG.info("registered providers: " + resourceTypeProviders.size());
+	}
+
+	void unbindResourceTypeProviders(ResourceTypesProvider provider) {
+		LOG.info("unbind provider: " + provider.getClass().getName());
+		SupportedResourceTypes toRemove = null;
+		for (SupportedResourceTypes type : resourceTypeProviders) {
+			if (type.getProvider().equals(provider)) {
+				toRemove = type;
+				break;
+			}
+		}
+		if (toRemove != null) {
+			resourceTypeProviders.remove(toRemove);
+		}
+		LOG.info("registered providers: " + resourceTypeProviders.size());
+	}
+
+	static final class SupportedResourceTypes {
+		private ResourceTypesProvider provider;
+
+		private String[] cachedResourceTypes;
+
+		private SupportedResourceTypes(ResourceTypesProvider provider) {
+			this.provider = provider;
+			if (!provider.getClass().isAnnotationPresent(NoCache.class)) {
+				String[] providedTypes = provider.getResourceTypes();
+				cachedResourceTypes = Arrays.copyOf(providedTypes, providedTypes.length);
+			}
+		}
+
+		public String[] getResourceTypes() {
+			if (cachedResourceTypes == null) {
+				return provider.getResourceTypes();
+			} else {
+				return cachedResourceTypes;
+			}
+		}
+
+		public ResourceTypesProvider getProvider() {
+			return provider;
+		}
 	}
 }
