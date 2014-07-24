@@ -1,11 +1,8 @@
 package com.cognifide.cq.includefilter;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.felix.scr.annotations.Activate;
@@ -13,17 +10,9 @@ import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.PropertyOption;
-import org.apache.felix.scr.annotations.Reference;
-import org.apache.felix.scr.annotations.ReferenceCardinality;
-import org.apache.felix.scr.annotations.ReferencePolicy;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.commons.osgi.PropertiesUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.cognifide.cq.includefilter.type.NoCache;
-import com.cognifide.cq.includefilter.type.ResourceTypesProvider;
 
 /**
  * Include filter configuration.
@@ -45,8 +34,6 @@ import com.cognifide.cq.includefilter.type.ResourceTypesProvider;
 		@Property(name = Configuration.PROPERTY_FILTER_SELECTOR, value = Configuration.DEFAULT_FILTER_SELECTOR, label = "Filter selector", description = "Selector used to mark included resources") })
 // @formatter:on
 public class Configuration {
-
-	private static final Logger LOG = LoggerFactory.getLogger(Configuration.class);
 
 	static final String PROPERTY_FILTER_PATH = "include-filter.config.path";
 
@@ -73,18 +60,13 @@ public class Configuration {
 
 	static final boolean DEFAULT_ADD_COMMENT = false;
 
-	private static final String RESOURCE_TYPES_ATTR = Configuration.class.getName() + ".resourceTypes";
-
-	@Reference(referenceInterface = ResourceTypesProvider.class, cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE, policy = ReferencePolicy.DYNAMIC)
-	private Set<SupportedResourceTypes> resourceTypeProviders = new CopyOnWriteArraySet<SupportedResourceTypes>();
-
 	private boolean isEnabled;
 
 	private String path;
 
 	private String includeSelector;
 
-	private String[] resourceTypes;
+	private List<String> resourceTypes;
 
 	private boolean addComment;
 
@@ -104,7 +86,7 @@ public class Configuration {
 			String name = s[0].trim();
 			resourceTypeList[i] = name;
 		}
-		this.resourceTypes = resourceTypeList;
+		this.resourceTypes = Arrays.asList(resourceTypeList);
 
 		includeSelector = PropertiesUtil.toString(properties.get(PROPERTY_FILTER_SELECTOR),
 				DEFAULT_FILTER_SELECTOR);
@@ -113,7 +95,7 @@ public class Configuration {
 				.toString(properties.get(PROPERTY_INCLUDE_TYPE), DEFAULT_INCLUDE_TYPE);
 	}
 
-	public String getPath() {
+	public String getBasePath() {
 		return path;
 	}
 
@@ -126,22 +108,7 @@ public class Configuration {
 	}
 
 	public boolean isSupportedResourceType(String type, SlingHttpServletRequest request) {
-		@SuppressWarnings("unchecked")
-		List<String> cachedTypes = (List<String>) request.getAttribute(RESOURCE_TYPES_ATTR);
-
-		if (cachedTypes == null) {
-			cachedTypes = new ArrayList<String>();
-			cachedTypes.addAll(Arrays.asList(resourceTypes));
-			for (SupportedResourceTypes provider : resourceTypeProviders) {
-				String[] providedResourceTypes = provider.getResourceTypes();
-				if (!ArrayUtils.isEmpty(providedResourceTypes)) {
-					cachedTypes.addAll(Arrays.asList(providedResourceTypes));
-				}
-			}
-			request.setAttribute(RESOURCE_TYPES_ATTR, cachedTypes);
-		}
-
-		return cachedTypes.contains(type);
+		return resourceTypes.contains(type);
 	}
 
 	public boolean getAddComment() {
@@ -154,52 +121,5 @@ public class Configuration {
 
 	public boolean isEnabled() {
 		return isEnabled;
-	}
-
-	void bindResourceTypeProviders(ResourceTypesProvider provider) {
-		LOG.info("bind new provider: " + provider.getClass().getName());
-		resourceTypeProviders.add(new SupportedResourceTypes(provider));
-		LOG.info("registered providers: " + resourceTypeProviders.size());
-	}
-
-	void unbindResourceTypeProviders(ResourceTypesProvider provider) {
-		LOG.info("unbind provider: " + provider.getClass().getName());
-		SupportedResourceTypes toRemove = null;
-		for (SupportedResourceTypes type : resourceTypeProviders) {
-			if (type.getProvider().equals(provider)) {
-				toRemove = type;
-				break;
-			}
-		}
-		if (toRemove != null) {
-			resourceTypeProviders.remove(toRemove);
-		}
-		LOG.info("registered providers: " + resourceTypeProviders.size());
-	}
-
-	static final class SupportedResourceTypes {
-		private ResourceTypesProvider provider;
-
-		private String[] cachedResourceTypes;
-
-		private SupportedResourceTypes(ResourceTypesProvider provider) {
-			this.provider = provider;
-			if (!provider.getClass().isAnnotationPresent(NoCache.class)) {
-				String[] providedTypes = provider.getResourceTypes();
-				cachedResourceTypes = Arrays.copyOf(providedTypes, providedTypes.length);
-			}
-		}
-
-		public String[] getResourceTypes() {
-			if (cachedResourceTypes == null) {
-				return provider.getResourceTypes();
-			} else {
-				return cachedResourceTypes;
-			}
-		}
-
-		public ResourceTypesProvider getProvider() {
-			return provider;
-		}
 	}
 }

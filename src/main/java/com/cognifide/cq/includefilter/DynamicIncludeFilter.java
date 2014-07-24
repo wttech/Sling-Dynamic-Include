@@ -26,7 +26,6 @@ import com.cognifide.cq.includefilter.processor.IncludeTagWritingProcessor;
 import com.cognifide.cq.includefilter.processor.RequestPassingProcessor;
 import com.cognifide.cq.includefilter.processor.SyntheticResourceIncludingProcessor;
 import com.cognifide.cq.includefilter.processor.ResourceIncludingProcessor;
-import com.cognifide.cq.includefilter.type.ResourceTypesProvider;
 
 /**
  * Dynamic Include Filter (based on Sling Caching Filter)
@@ -38,7 +37,7 @@ import com.cognifide.cq.includefilter.type.ResourceTypesProvider;
 @SlingFilter(scope = {SlingFilterScope.REQUEST, SlingFilterScope.INCLUDE}, order = 0)
 public class DynamicIncludeFilter implements Filter {
 
-	@Reference(referenceInterface = ResourceTypesProvider.class, cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE, policy = ReferencePolicy.DYNAMIC)
+	@Reference(referenceInterface = Configuration.class, cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE, policy = ReferencePolicy.DYNAMIC)
 	private Set<Configuration> configs = new CopyOnWriteArraySet<Configuration>();
 
 	@Reference
@@ -61,9 +60,9 @@ public class DynamicIncludeFilter implements Filter {
 		}
 		final SlingHttpServletRequest slingRequest = (SlingHttpServletRequest) request;
 		final SlingHttpServletResponse slingResponse = (SlingHttpServletResponse) response;
-		final String path = slingRequest.getRequestPathInfo().getResourcePath();
+		final String requestPath = slingRequest.getRequestPathInfo().getResourcePath();
 		for (Configuration c : configs) {
-			if (c.isEnabled() && path.startsWith(c.getPath())) {
+			if (c.isEnabled() && requestPath.startsWith(c.getBasePath())) {
 				process(c, slingRequest, slingResponse, chain);
 				return;
 			}
