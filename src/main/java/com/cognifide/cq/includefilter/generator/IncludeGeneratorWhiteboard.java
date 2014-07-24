@@ -17,7 +17,7 @@ import org.apache.felix.scr.annotations.Service;
 
 @Component(immediate = true)
 @Service
-public class IncludeGeneratorRegistryImpl implements IncludeGeneratorFactory {
+public class IncludeGeneratorWhiteboard implements IncludeGeneratorFactory {
 	@Reference(referenceInterface = IncludeGenerator.class, cardinality = ReferenceCardinality.MANDATORY_MULTIPLE, policy = ReferencePolicy.DYNAMIC)
 	private Set<IncludeGenerator> generators = new CopyOnWriteArraySet<IncludeGenerator>();
 
