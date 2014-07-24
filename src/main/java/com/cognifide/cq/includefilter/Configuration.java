@@ -24,6 +24,7 @@ import org.apache.sling.commons.osgi.PropertiesUtil;
 @Service(Configuration.class)
 @Properties({
 		@Property(name = Configuration.PROPERTY_FILTER_ENABLED, boolValue = Configuration.DEFAULT_FILTER_ENABLED, label = "Enabled", description = "Check to enable the filter"),
+		@Property(name = Configuration.PROPERTY_FILTER_PATH, value = Configuration.DEFAULT_FILTER_PATH, label = "Base path", description = "This SDI configuration will work only for this path"),
 		@Property(name = Configuration.PROPERTY_FILTER_RESOURCE_TYPES, value = {
 				"foundation/components/carousel", "foundation/components/userinfo" }, cardinality = Integer.MAX_VALUE, label = "Resource types", description = "Filter will replace components with selected resource types"),
 		@Property(name = Configuration.PROPERTY_INCLUDE_TYPE, value = Configuration.DEFAULT_INCLUDE_TYPE, label = "Include type", description = "Type of generated include tags", options = {
