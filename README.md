@@ -20,14 +20,16 @@ Add following dependency to your project:
     <dependency>
 	    <groupId>com.cognifide.cq</groupId>
 	    <artifactId>sling-dynamic-include</artifactId>
-	    <version>1.0.0</version>
+	    <version>2.0.0</version>
     <dependency>
 
 ## Configuration
 
-Filter is delivered as a standard OSGi bundle. There are following configuration options:
+Filter is delivered as a standard OSGi bundle. SDI is configured via the configuration factory called *SDI Configuration*. Following properties are available:
 
 * **Enabled** - enable SDI
+* **Base path** - given SDI configuration will be enabled only for this
+  path
 * **Resource types** - which components should be replaced with tags
 * **Include type** - type of include tag (Apache SSI, ESI or Javascript)
 * **Add comment** - adds debug comment: `<!-- Following component is included by DynamicIncludeFilter (path: %s ) -->` to every replaced component
