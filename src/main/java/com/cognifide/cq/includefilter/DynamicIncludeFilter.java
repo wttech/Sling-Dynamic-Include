@@ -13,13 +13,16 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Properties;
+import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.ReferenceCardinality;
 import org.apache.felix.scr.annotations.ReferencePolicy;
-import org.apache.felix.scr.annotations.sling.SlingFilter;
-import org.apache.felix.scr.annotations.sling.SlingFilterScope;
+import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.engine.EngineConstants;
 
 import com.cognifide.cq.includefilter.generator.IncludeGeneratorFactory;
 import com.cognifide.cq.includefilter.processor.IncludeTagWritingProcessor;
@@ -34,7 +37,14 @@ import com.cognifide.cq.includefilter.processor.ResourceIncludingProcessor;
  */
 
 //@formatter:off
-@SlingFilter(scope = {SlingFilterScope.REQUEST, SlingFilterScope.INCLUDE}, order = 0)
+@Component
+@Service
+@Properties({
+	@Property(
+		name = EngineConstants.SLING_FILTER_SCOPE,
+		value = {EngineConstants.FILTER_SCOPE_REQUEST, EngineConstants.FILTER_SCOPE_INCLUDE },
+		propertyPrivate = true)})
+//@formatter:on
 public class DynamicIncludeFilter implements Filter {
 
 	@Reference(referenceInterface = Configuration.class, cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE, policy = ReferencePolicy.DYNAMIC)
@@ -63,14 +73,16 @@ public class DynamicIncludeFilter implements Filter {
 		final String requestPath = slingRequest.getRequestPathInfo().getResourcePath();
 		for (Configuration c : configs) {
 			if (c.isEnabled() && requestPath.startsWith(c.getBasePath())) {
-				process(c, slingRequest, slingResponse, chain);
-				return;
+				if (process(c, slingRequest, slingResponse, chain)) {
+					return;
+				}
 			}
 		}
 		chain.doFilter(request, response);
 	}
-	
-	private void process(Configuration config, SlingHttpServletRequest slingRequest,SlingHttpServletResponse slingResponse, FilterChain chain ) throws IOException, ServletException {
+
+	private boolean process(Configuration config, SlingHttpServletRequest slingRequest,
+			SlingHttpServletResponse slingResponse, FilterChain chain) throws IOException, ServletException {
 		List<RequestProcessor> processors = new ArrayList<RequestProcessor>();
 		processors.add(new RequestPassingProcessor());
 		processors.add(new SyntheticResourceIncludingProcessor(config));
@@ -79,11 +91,12 @@ public class DynamicIncludeFilter implements Filter {
 		for (RequestProcessor p : processors) {
 			if (p.accepts(slingRequest)) {
 				p.process(slingRequest, slingResponse, chain);
-				return;
+				return true;
 			}
 		}
+		return false;
 	}
-	
+
 	protected void bindConfigs(final Configuration config) {
 		configs.add(config);
 	}

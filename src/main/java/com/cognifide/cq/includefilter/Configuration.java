@@ -7,12 +7,15 @@ import java.util.Map;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.ConfigurationPolicy;
+import org.apache.felix.scr.annotations.Deactivate;
 import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.PropertyOption;
-import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.commons.osgi.PropertiesUtil;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.component.ComponentContext;
 
 /**
  * Include filter configuration.
@@ -20,8 +23,7 @@ import org.apache.sling.commons.osgi.PropertiesUtil;
  * @author tomasz.rekawek
  * 
  */
-@Component(metatype = true, configurationFactory = true)
-@Service(Configuration.class)
+@Component(metatype = true, configurationFactory = true, label = "SDI Configuration", immediate = true, policy = ConfigurationPolicy.REQUIRE)
 @Properties({
 		@Property(name = Configuration.PROPERTY_FILTER_ENABLED, boolValue = Configuration.DEFAULT_FILTER_ENABLED, label = "Enabled", description = "Check to enable the filter"),
 		@Property(name = Configuration.PROPERTY_FILTER_PATH, value = Configuration.DEFAULT_FILTER_PATH, label = "Base path", description = "This SDI configuration will work only for this path"),
@@ -33,7 +35,6 @@ import org.apache.sling.commons.osgi.PropertiesUtil;
 				@PropertyOption(name = "JSI", value = "Javascript") }),
 		@Property(name = Configuration.PROPERTY_ADD_COMMENT, boolValue = Configuration.DEFAULT_ADD_COMMENT, label = "Add comment", description = "Add comment to included components"),
 		@Property(name = Configuration.PROPERTY_FILTER_SELECTOR, value = Configuration.DEFAULT_FILTER_SELECTOR, label = "Filter selector", description = "Selector used to mark included resources") })
-// @formatter:on
 public class Configuration {
 
 	static final String PROPERTY_FILTER_PATH = "include-filter.config.path";
@@ -61,6 +62,8 @@ public class Configuration {
 
 	static final boolean DEFAULT_ADD_COMMENT = false;
 
+	private ServiceRegistration reg;
+
 	private boolean isEnabled;
 
 	private String path;
@@ -74,7 +77,7 @@ public class Configuration {
 	private String includeTypeName;
 
 	@Activate
-	public void activate(Map<String, Object> properties) {
+	public void activate(ComponentContext context, Map<String, ?> properties) {
 		isEnabled = PropertiesUtil.toBoolean(properties.get(PROPERTY_FILTER_ENABLED), DEFAULT_FILTER_ENABLED);
 		path = PropertiesUtil.toString(properties.get(PROPERTY_FILTER_PATH), DEFAULT_FILTER_PATH);
 		String[] resourceTypeList;
@@ -94,6 +97,14 @@ public class Configuration {
 		addComment = PropertiesUtil.toBoolean(properties.get(PROPERTY_ADD_COMMENT), DEFAULT_ADD_COMMENT);
 		includeTypeName = PropertiesUtil
 				.toString(properties.get(PROPERTY_INCLUDE_TYPE), DEFAULT_INCLUDE_TYPE);
+
+		reg = context.getBundleContext().registerService(Configuration.class.getName(), this,
+				context.getProperties());
+	}
+
+	@Deactivate
+	public void deactivate() {
+		reg.unregister();
 	}
 
 	public String getBasePath() {
