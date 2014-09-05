@@ -72,7 +72,7 @@ public class DynamicIncludeFilter implements Filter {
 		final SlingHttpServletResponse slingResponse = (SlingHttpServletResponse) response;
 		final String requestPath = slingRequest.getRequestPathInfo().getResourcePath();
 		for (Configuration c : configs) {
-			if (c.isEnabled() && requestPath.startsWith(c.getBasePath())) {
+			if (c.isEnabled() && requestPath != null && requestPath.startsWith(c.getBasePath())) {
 				if (process(c, slingRequest, slingResponse, chain)) {
 					return;
 				}
