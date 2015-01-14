@@ -23,7 +23,7 @@ public class IncludeTagWritingProcessor implements RequestProcessor {
 
 	private static final Logger LOG = LoggerFactory.getLogger(IncludeTagWritingProcessor.class);
 
-	private static final String COMMENT = "<!-- Following component is included by DynamicIncludeFilter (path: %s ) -->\n";
+	private static final String COMMENT = "<!-- SDI include (path: %s, resourceType: %s) -->\n";
 
 	private final Configuration config;
 
@@ -60,7 +60,7 @@ public class IncludeTagWritingProcessor implements RequestProcessor {
 
 			PrintWriter writer = response.getWriter();
 			if (config.getAddComment()) {
-				writer.append(String.format(COMMENT, url));
+				writer.append(String.format(COMMENT, url, request.getResource().getResourceType()));
 			}
 			writer.append(include);
 		} else {
