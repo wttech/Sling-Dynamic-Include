@@ -34,7 +34,9 @@ import org.osgi.service.component.ComponentContext;
 				@PropertyOption(name = "ESI", value = "ESI"),
 				@PropertyOption(name = "JSI", value = "Javascript") }),
 		@Property(name = Configuration.PROPERTY_ADD_COMMENT, boolValue = Configuration.DEFAULT_ADD_COMMENT, label = "Add comment", description = "Add comment to included components"),
-		@Property(name = Configuration.PROPERTY_FILTER_SELECTOR, value = Configuration.DEFAULT_FILTER_SELECTOR, label = "Filter selector", description = "Selector used to mark included resources") })
+		@Property(name = Configuration.PROPERTY_FILTER_SELECTOR, value = Configuration.DEFAULT_FILTER_SELECTOR, label = "Filter selector", description = "Selector used to mark included resources"),
+		@Property(name = Configuration.PROPERTY_REQUIRED_HEADER, value = Configuration.DEFAULT_REQUIRED_HEADER, label = "Required header", description = "SDI will work only for requests with given header")
+})
 public class Configuration {
 
 	static final String PROPERTY_FILTER_PATH = "include-filter.config.path";
@@ -62,6 +64,10 @@ public class Configuration {
 
 	static final boolean DEFAULT_ADD_COMMENT = false;
 
+	static final String PROPERTY_REQUIRED_HEADER = "include-filter.config.required_header";
+
+	static final String DEFAULT_REQUIRED_HEADER = "Server-Agent=Communique-Dispatcher";
+
 	private ServiceRegistration reg;
 
 	private boolean isEnabled;
@@ -75,6 +81,8 @@ public class Configuration {
 	private boolean addComment;
 
 	private String includeTypeName;
+
+	private String requiredHeader;
 
 	@Activate
 	public void activate(ComponentContext context, Map<String, ?> properties) {
@@ -97,7 +105,8 @@ public class Configuration {
 		addComment = PropertiesUtil.toBoolean(properties.get(PROPERTY_ADD_COMMENT), DEFAULT_ADD_COMMENT);
 		includeTypeName = PropertiesUtil
 				.toString(properties.get(PROPERTY_INCLUDE_TYPE), DEFAULT_INCLUDE_TYPE);
-
+		requiredHeader = PropertiesUtil.toString(properties.get(PROPERTY_REQUIRED_HEADER),
+				DEFAULT_REQUIRED_HEADER);
 		reg = context.getBundleContext().registerService(Configuration.class.getName(), this,
 				context.getProperties());
 	}
@@ -133,5 +142,9 @@ public class Configuration {
 
 	public boolean isEnabled() {
 		return isEnabled;
+	}
+
+	public String getRequiredHeader() {
+		return requiredHeader;
 	}
 }

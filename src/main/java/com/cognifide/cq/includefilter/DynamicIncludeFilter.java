@@ -13,6 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
@@ -70,15 +71,45 @@ public class DynamicIncludeFilter implements Filter {
 		}
 		final SlingHttpServletRequest slingRequest = (SlingHttpServletRequest) request;
 		final SlingHttpServletResponse slingResponse = (SlingHttpServletResponse) response;
-		final String requestPath = slingRequest.getRequestPathInfo().getResourcePath();
+
 		for (Configuration c : configs) {
-			if (c.isEnabled() && requestPath != null && requestPath.startsWith(c.getBasePath())) {
+			if (isEnabled(c, slingRequest)) {
 				if (process(c, slingRequest, slingResponse, chain)) {
 					return;
 				}
 			}
 		}
 		chain.doFilter(request, response);
+	}
+
+	private boolean isEnabled(Configuration config, SlingHttpServletRequest request) {
+		final String requestPath = request.getRequestPathInfo().getResourcePath();
+		final String requiredHeader = config.getRequiredHeader();
+		boolean isEnabled = config.isEnabled();
+		isEnabled &= StringUtils.startsWith(requestPath, config.getBasePath());
+		isEnabled &= StringUtils.isBlank(requiredHeader) || containsHeader(requiredHeader, request);
+		return isEnabled;
+	}
+
+	private boolean containsHeader(String requiredHeader, SlingHttpServletRequest request) {
+		final String name, expectedValue;
+		if (StringUtils.contains(requiredHeader, '=')) {
+			final String split[] = StringUtils.split(requiredHeader, '=');
+			name = split[0];
+			expectedValue = split[1];
+		} else {
+			name = requiredHeader;
+			expectedValue = null;
+		}
+
+		final String actualValue = request.getHeader(name);
+		if (actualValue == null) {
+			return false;
+		} else if (expectedValue == null) {
+			return true;
+		} else {
+			return actualValue.equalsIgnoreCase(expectedValue);
+		}
 	}
 
 	private boolean process(Configuration config, SlingHttpServletRequest slingRequest,
