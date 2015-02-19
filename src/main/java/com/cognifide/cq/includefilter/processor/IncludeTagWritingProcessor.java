@@ -53,58 +53,56 @@ public class IncludeTagWritingProcessor implements RequestProcessor {
 	@Override
 	public void process(SlingHttpServletRequest request, SlingHttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
+		IncludeGenerator generator = generatorFactory.getGenerator(config.getIncludeTypeName());
+		if (generator == null) {
+			LOG.error("Can't filter; includeGenerator is null");
+			return;
+		}
 
-        IncludeGenerator generator = generatorFactory.getGenerator(config.getIncludeTypeName());
-        if(generator == null) {
-            LOG.error("Can't filter; includeGenerator is null");
-            return;
-        }
+		PrintWriter writer = response.getWriter();
+		boolean synthetic = ResourceUtil.isSyntheticResource(request.getResource());
+		String url = getUrl(request, synthetic);
 
-        PrintWriter writer = response.getWriter();
-        boolean synthetic = ResourceUtil.isSyntheticResource(request.getResource());
-        String url = getUrl(request, synthetic);
+		if (config.getAddComment()) {
+			writer.append(String.format(COMMENT, url, request.getResource().getResourceType()));
+		}
 
-        if(config.getAddComment()) {
-            writer.append(String.format(COMMENT, url, request.getResource().getResourceType()));
-        }
+		// Only write the includes markup if the required, configurable request header is present
+		if (shouldWriteIncludes(request)) {
+			String include = generator.getInclude(url);
+			LOG.debug(include);
 
-        //Only write the includes markup if the required, configurable request header is present
-        if(shouldWriteIncludes(request)) {
-            String include = generator.getInclude(url);
-            LOG.debug(include);
-
-            writer.append(include);
-        }
-        else {
-            chain.doFilter(request, response);
-        }
+			writer.append(include);
+		} else {
+			chain.doFilter(request, response);
+		}
 	}
 
-    private boolean shouldWriteIncludes(final SlingHttpServletRequest request) {
-        final String requiredHeader = config.getRequiredHeader();
-        return StringUtils.isBlank(requiredHeader) || containsHeader(requiredHeader, request);
-    }
+	private boolean shouldWriteIncludes(final SlingHttpServletRequest request) {
+		final String requiredHeader = config.getRequiredHeader();
+		return StringUtils.isBlank(requiredHeader) || containsHeader(requiredHeader, request);
+	}
 
-    private boolean containsHeader(String requiredHeader, SlingHttpServletRequest request) {
-        final String name, expectedValue;
-        if (StringUtils.contains(requiredHeader, '=')) {
-            final String split[] = StringUtils.split(requiredHeader, '=');
-            name = split[0];
-            expectedValue = split[1];
-        } else {
-            name = requiredHeader;
-            expectedValue = null;
-        }
+	private boolean containsHeader(String requiredHeader, SlingHttpServletRequest request) {
+		final String name, expectedValue;
+		if (StringUtils.contains(requiredHeader, '=')) {
+			final String split[] = StringUtils.split(requiredHeader, '=');
+			name = split[0];
+			expectedValue = split[1];
+		} else {
+			name = requiredHeader;
+			expectedValue = null;
+		}
 
-        final String actualValue = request.getHeader(name);
-        if (actualValue == null) {
-            return false;
-        } else if (expectedValue == null) {
-            return true;
-        } else {
-            return actualValue.equalsIgnoreCase(expectedValue);
-        }
-    }
+		final String actualValue = request.getHeader(name);
+		if (actualValue == null) {
+			return false;
+		} else if (expectedValue == null) {
+			return true;
+		} else {
+			return actualValue.equalsIgnoreCase(expectedValue);
+		}
+	}
 
 	private String getUrl(SlingHttpServletRequest request, boolean synthetic) {
 		boolean isSynthetic = synthetic;
