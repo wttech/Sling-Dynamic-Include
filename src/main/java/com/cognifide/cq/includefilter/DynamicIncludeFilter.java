@@ -84,32 +84,7 @@ public class DynamicIncludeFilter implements Filter {
 
 	private boolean isEnabled(Configuration config, SlingHttpServletRequest request) {
 		final String requestPath = request.getRequestPathInfo().getResourcePath();
-		final String requiredHeader = config.getRequiredHeader();
-		boolean isEnabled = config.isEnabled();
-		isEnabled &= StringUtils.startsWith(requestPath, config.getBasePath());
-		isEnabled &= StringUtils.isBlank(requiredHeader) || containsHeader(requiredHeader, request);
-		return isEnabled;
-	}
-
-	private boolean containsHeader(String requiredHeader, SlingHttpServletRequest request) {
-		final String name, expectedValue;
-		if (StringUtils.contains(requiredHeader, '=')) {
-			final String split[] = StringUtils.split(requiredHeader, '=');
-			name = split[0];
-			expectedValue = split[1];
-		} else {
-			name = requiredHeader;
-			expectedValue = null;
-		}
-
-		final String actualValue = request.getHeader(name);
-		if (actualValue == null) {
-			return false;
-		} else if (expectedValue == null) {
-			return true;
-		} else {
-			return actualValue.equalsIgnoreCase(expectedValue);
-		}
+		return config.isEnabled() && StringUtils.startsWith(requestPath, config.getBasePath());
 	}
 
 	private boolean process(Configuration config, SlingHttpServletRequest slingRequest,
