@@ -48,7 +48,7 @@ public class ResourceIncludingProcessor implements RequestProcessor {
 			RequestDispatcherOptions options = new RequestDispatcherOptions();
 			RequestDispatcher dispatcher = request.getRequestDispatcher(url.toString(), options);
 			request.setAttribute(INCLUDED_ATTRIBUTE, Boolean.TRUE);
-			dispatcher.include(request, response);
+			dispatcher.forward(request, response);
 		} else {
 			LOG.error("User tries to include " + resourceType
 					+ " but it is not in the dynamic resource type list.");

@@ -58,7 +58,7 @@ public class SyntheticResourceIncludingProcessor implements RequestProcessor {
 
 			RequestDispatcher dispatcher = request.getRequestDispatcher(path, options);
 			request.setAttribute(ResourceIncludingProcessor.INCLUDED_ATTRIBUTE, Boolean.TRUE);
-			dispatcher.include(request, response);
+			dispatcher.forward(request, response);
 		} else if (!synthetic) {
 			LOG.error("User tries to include " + request.getResource().getPath()
 					+ " but it is not a synthetic resource.");
