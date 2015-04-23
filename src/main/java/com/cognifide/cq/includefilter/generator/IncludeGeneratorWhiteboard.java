@@ -15,13 +15,13 @@ import org.apache.felix.scr.annotations.Service;
  * @author tomasz.rekawek
  */
 
-@Component(immediate = true)
-@Service
-public class IncludeGeneratorWhiteboard implements IncludeGeneratorFactory {
+@Component
+@Service(IncludeGeneratorWhiteboard.class)
+public class IncludeGeneratorWhiteboard {
+
 	@Reference(referenceInterface = IncludeGenerator.class, cardinality = ReferenceCardinality.MANDATORY_MULTIPLE, policy = ReferencePolicy.DYNAMIC)
 	private Set<IncludeGenerator> generators = new CopyOnWriteArraySet<IncludeGenerator>();
 
-	@Override
 	public IncludeGenerator getGenerator(String type) {
 		for (IncludeGenerator generator : generators) {
 			if (type.equals(generator.getType())) {

@@ -21,7 +21,7 @@ import com.cognifide.cq.includefilter.generator.IncludeGenerator;
  * 
  * @author tomasz.rekawek
  */
-@Component(immediate=true)
+@Component
 @Service
 public class JsiGenerator implements IncludeGenerator {
 	private static final String TEMPLATE_FILENAME = "generators/jquery.html";

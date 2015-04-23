@@ -11,7 +11,7 @@ import com.cognifide.cq.includefilter.generator.IncludeGenerator;
  * @author tomasz.rekawek
  * 
  */
-@Component(immediate=true)
+@Component
 @Service
 public class EsiGenerator implements IncludeGenerator {
 	private static final String GENERATOR_NAME = "ESI";
