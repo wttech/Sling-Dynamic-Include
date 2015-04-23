@@ -3,6 +3,7 @@ package com.cognifide.cq.includefilter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.request.RequestPathInfo;
 
@@ -104,11 +105,10 @@ public class MutableUrl {
 		if (replaceSuffix != null) {
 			if (!replaceSuffix.isEmpty()) {
 				buf.append('/');
-				buf.append(replaceSuffix);
+				buf.append(sanitize(replaceSuffix));
 			}
 		} else if (originalPathInfo.getSuffix() != null) {
-			buf.append('/');
-			buf.append(originalPathInfo.getSuffix());
+			buf.append(sanitize(originalPathInfo.getSuffix()));
 		}
 
 		String url = buf.toString();
@@ -123,12 +123,20 @@ public class MutableUrl {
 		for (String sel : selectors) {
 			if (!selectorsToRemove.contains(sel) && !selectorsToAdd.contains(sel)) {
 				buf.append('.');
-				buf.append(sel);
+				buf.append(sanitize(sel));
 			}
 		}
 		for (String sel : selectorsToAdd) {
 			buf.append('.');
-			buf.append(sel);
+			buf.append(sanitize(sel));
+		}
+	}
+
+	private static String sanitize(String dirtyString) {
+		if (StringUtils.isBlank(dirtyString)) {
+			return "";
+		} else {
+			return dirtyString.replaceAll("[^0-9a-zA-Z:.\\-/_]", "");
 		}
 	}
 }
