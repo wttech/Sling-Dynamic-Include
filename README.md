@@ -20,7 +20,7 @@ Add following dependency to your project:
     <dependency>
 	    <groupId>com.cognifide.cq</groupId>
 	    <artifactId>sling-dynamic-include</artifactId>
-	    <version>2.0.2</version>
+	    <version>2.0.3</version>
     </dependency>
 
 ## Configuration
