@@ -136,7 +136,7 @@ public class MutableUrl {
 		if (StringUtils.isBlank(dirtyString)) {
 			return "";
 		} else {
-			return dirtyString.replaceAll("[^0-9a-zA-Z:.\\-/_]", "");
+			return dirtyString.replaceAll("[^0-9a-zA-Z:.\\-/_=]", "");
 		}
 	}
 }
