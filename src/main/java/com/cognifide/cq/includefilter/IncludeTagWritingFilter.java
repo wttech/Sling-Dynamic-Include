@@ -2,6 +2,8 @@ package com.cognifide.cq.includefilter;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Enumeration;
+import java.util.List;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -74,8 +76,22 @@ public class IncludeTagWritingFilter implements Filter {
 	}
 
 	private boolean shouldWriteIncludes(Configuration config, SlingHttpServletRequest request) {
+		if (requestHasParameters(config.getIgnoreUrlParams(), request)) {
+			return false;
+		}
 		final String requiredHeader = config.getRequiredHeader();
 		return StringUtils.isBlank(requiredHeader) || containsHeader(requiredHeader, request);
+	}
+
+	private boolean requestHasParameters(List<String> ignoreUrlParams, SlingHttpServletRequest request) {
+		final Enumeration<?> paramNames = request.getParameterNames();
+		while (paramNames.hasMoreElements()) {
+			final String paramName = (String) paramNames.nextElement();
+			if (!ignoreUrlParams.contains(paramName)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private boolean containsHeader(String requiredHeader, SlingHttpServletRequest request) {

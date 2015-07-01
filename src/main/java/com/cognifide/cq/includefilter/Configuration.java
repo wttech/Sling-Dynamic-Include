@@ -28,15 +28,15 @@ import org.osgi.service.component.ComponentContext;
 @Properties({
 		@Property(name = Configuration.PROPERTY_FILTER_ENABLED, boolValue = Configuration.DEFAULT_FILTER_ENABLED, label = "Enabled", description = "Check to enable the filter"),
 		@Property(name = Configuration.PROPERTY_FILTER_PATH, value = Configuration.DEFAULT_FILTER_PATH, label = "Base path", description = "This SDI configuration will work only for this path"),
-		@Property(name = Configuration.PROPERTY_FILTER_RESOURCE_TYPES, value = {
-				"foundation/components/carousel", "foundation/components/userinfo" }, cardinality = Integer.MAX_VALUE, label = "Resource types", description = "Filter will replace components with selected resource types"),
+		@Property(name = Configuration.PROPERTY_FILTER_RESOURCE_TYPES, cardinality = Integer.MAX_VALUE, label = "Resource types", description = "Filter will replace components with selected resource types"),
 		@Property(name = Configuration.PROPERTY_INCLUDE_TYPE, value = Configuration.DEFAULT_INCLUDE_TYPE, label = "Include type", description = "Type of generated include tags", options = {
 				@PropertyOption(name = "SSI", value = "Apache SSI"),
 				@PropertyOption(name = "ESI", value = "ESI"),
 				@PropertyOption(name = "JSI", value = "Javascript") }),
 		@Property(name = Configuration.PROPERTY_ADD_COMMENT, boolValue = Configuration.DEFAULT_ADD_COMMENT, label = "Add comment", description = "Add comment to included components"),
 		@Property(name = Configuration.PROPERTY_FILTER_SELECTOR, value = Configuration.DEFAULT_FILTER_SELECTOR, label = "Filter selector", description = "Selector used to mark included resources"),
-		@Property(name = Configuration.PROPERTY_REQUIRED_HEADER, value = Configuration.DEFAULT_REQUIRED_HEADER, label = "Required header", description = "SDI will work only for requests with given header")
+		@Property(name = Configuration.PROPERTY_REQUIRED_HEADER, value = Configuration.DEFAULT_REQUIRED_HEADER, label = "Required header", description = "SDI will work only for requests with given header"),
+		@Property(name = Configuration.PROPERTY_IGNORE_URL_PARAMS, cardinality = Integer.MAX_VALUE, label = "Ignore URL params", description = "SDI will process the request even if it contains configured GET parameters")
 })
 public class Configuration {
 
@@ -49,9 +49,6 @@ public class Configuration {
 	static final boolean DEFAULT_FILTER_ENABLED = false;
 
 	static final String PROPERTY_FILTER_RESOURCE_TYPES = "include-filter.config.resource-types";
-
-	static final String[] DEFAULT_FILTER_RESOURCE_TYPES = new String[] { "foundation/components/carousel",
-			"foundation/components/userinfo" };
 
 	static final String PROPERTY_FILTER_SELECTOR = "include-filter.config.selector";
 
@@ -69,6 +66,8 @@ public class Configuration {
 
 	static final String DEFAULT_REQUIRED_HEADER = "Server-Agent=Communique-Dispatcher";
 
+	static final String PROPERTY_IGNORE_URL_PARAMS = "include-filter.config.ignoreUrlParams";
+
 	private boolean isEnabled;
 
 	private String path;
@@ -83,15 +82,14 @@ public class Configuration {
 
 	private String requiredHeader;
 
+	private List<String> ignoreUrlParams;
+
 	@Activate
 	public void activate(ComponentContext context, Map<String, ?> properties) {
 		isEnabled = PropertiesUtil.toBoolean(properties.get(PROPERTY_FILTER_ENABLED), DEFAULT_FILTER_ENABLED);
 		path = PropertiesUtil.toString(properties.get(PROPERTY_FILTER_PATH), DEFAULT_FILTER_PATH);
 		String[] resourceTypeList;
-		resourceTypeList = PropertiesUtil.toStringArray(properties.get(PROPERTY_FILTER_RESOURCE_TYPES));
-		if (resourceTypeList == null) {
-			resourceTypeList = DEFAULT_FILTER_RESOURCE_TYPES;
-		}
+		resourceTypeList = PropertiesUtil.toStringArray(properties.get(PROPERTY_FILTER_RESOURCE_TYPES), new String[0]);
 		for (int i = 0; i < resourceTypeList.length; i++) {
 			String[] s = resourceTypeList[i].split(";");
 			String name = s[0].trim();
@@ -106,6 +104,7 @@ public class Configuration {
 				.toString(properties.get(PROPERTY_INCLUDE_TYPE), DEFAULT_INCLUDE_TYPE);
 		requiredHeader = PropertiesUtil.toString(properties.get(PROPERTY_REQUIRED_HEADER),
 				DEFAULT_REQUIRED_HEADER);
+		ignoreUrlParams = Arrays.asList(PropertiesUtil.toStringArray(properties.get(PROPERTY_IGNORE_URL_PARAMS), new String[0]));
 	}
 
 	public String getBasePath() {
@@ -138,5 +137,9 @@ public class Configuration {
 
 	public String getRequiredHeader() {
 		return requiredHeader;
+	}
+
+	public List<String> getIgnoreUrlParams() {
+		return ignoreUrlParams;
 	}
 }
