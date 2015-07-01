@@ -139,7 +139,7 @@ public class IncludeTagWritingFilter implements Filter {
 		if (StringUtils.isBlank(dirtyString)) {
 			return "";
 		} else {
-			return dirtyString.replaceAll("[^0-9a-zA-Z:.\\-/]", "");
+			return dirtyString.replaceAll("[^0-9a-zA-Z:.\\-/_=]", "");
 		}
 	}
 
