@@ -35,7 +35,7 @@ Filter is delivered as a standard OSGi bundle. SDI is configured via the configu
 * **Add comment** - adds debug comment: `<!-- SDI include (path: %s, resourceType: %s) -->` to every replaced component
 * **Filter selector** - selector used to get actual content
 * **Required header** - SDI will be enabled only if the configured header is present in the request. By default it's `Server-Agent=Communique-Dispatcher` header, added by the AEM dispatcher. You may enter just the header name only or the name and the value split with `=`.
-
+* **Ignore URL params** - SDI normally skips all requests containing any GET parameters. This option allows to set a list of parameters that should be ignored in the test. See the [Ignoring URL parameters](https://docs.adobe.com/docs/en/dispatcher/disp-config.html#Ignoring%20URL%20Parameters) section in the dispatcher documentation.
 
 ## Compatibility with components
 
