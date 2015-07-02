@@ -8,6 +8,6 @@ package com.cognifide.cq.includefilter.generator;
  */
 public interface IncludeGenerator {
 	String getType();
-	
+
 	String getInclude(String url);
 }
