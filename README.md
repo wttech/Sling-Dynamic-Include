@@ -136,7 +136,7 @@ Selector is necessary, because otherwise filter would again replace component wi
 
 # Commercial Support
 
-Technical support can be made available if needed. Please [contact us](https://www.cognifide.com/get-in-touch/) for more details.
+Technical support can be made available if needed. Please [contact us](mailto:labs-support@cognifide.com) for more details.
 
 We can:
 
