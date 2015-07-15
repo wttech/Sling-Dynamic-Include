@@ -11,14 +11,24 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Properties;
+import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
-import org.apache.felix.scr.annotations.sling.SlingFilter;
-import org.apache.felix.scr.annotations.sling.SlingFilterScope;
+import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.request.RequestDispatcherOptions;
 import org.apache.sling.api.resource.ResourceUtil;
+import org.apache.sling.engine.EngineConstants;
+import org.osgi.framework.Constants;
 
-@SlingFilter(scope = SlingFilterScope.REQUEST, order = 0)
+@Component(metatype = true, label="Cognifide : SDI : Synthetic Resource Include Filter")
+@Service
+@Properties({
+	@Property(name = Constants.SERVICE_VENDOR, value = "Cognifide"),
+	@Property(name = EngineConstants.SLING_FILTER_SCOPE, value = EngineConstants.FILTER_SCOPE_REQUEST, propertyPrivate = true),
+	@Property(name = Constants.SERVICE_RANKING, intValue = Integer.MIN_VALUE, description = "< -2500 after 6.0 SP2, > -2500 before SP2 ", propertyPrivate = false),
+})
 public class SyntheticResourceIncludingFilter implements Filter {
 
 	@Reference
