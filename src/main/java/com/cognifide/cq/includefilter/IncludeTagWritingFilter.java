@@ -2,6 +2,8 @@ package com.cognifide.cq.includefilter;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -12,6 +14,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.sling.SlingFilter;
@@ -60,9 +63,13 @@ public class IncludeTagWritingFilter implements Filter {
 
 		final PrintWriter writer = response.getWriter();
 		final String url = getUrl(config, slingRequest);
-
+		if (url == null) {
+			chain.doFilter(request, response);
+			return;
+		}
+		
 		if (config.getAddComment()) {
-			writer.append(String.format(COMMENT, url, resourceType));
+			writer.append(String.format(COMMENT, StringEscapeUtils.escapeHtml(url), resourceType));
 		}
 
 		// Only write the includes markup if the required, configurable request header is present
@@ -116,12 +123,29 @@ public class IncludeTagWritingFilter implements Filter {
 	}
 
 	private String getUrl(Configuration config, SlingHttpServletRequest request) {
+		String url = buildUrl(config, request);
+		
+		if (config.isRewritePath()) {
+			url = request.getResourceResolver().map(request, url);
+		}
+		
+		try {
+			return new URI(url).toASCIIString();
+
+		} catch (URISyntaxException e) {
+			LOG.error("Include url in the wrong format", e);
+		}
+		return null;
+	}
+	
+	private String buildUrl(Configuration config, SlingHttpServletRequest request) {
 		final boolean synthetic = ResourceUtil.isSyntheticResource(request.getResource());
 		final Resource resource = request.getResource();
 		final StringBuilder builder = new StringBuilder();
 		final RequestPathInfo pathInfo = request.getRequestPathInfo();
 
-		builder.append(pathInfo.getResourcePath());
+		final String resourcePath = pathInfo.getResourcePath().replace("jcr:content", "_jcr_content");
+		builder.append(resourcePath);
 		if (pathInfo.getSelectorString() != null) {
 			builder.append('.').append(sanitize(pathInfo.getSelectorString()));
 		}
@@ -135,12 +159,8 @@ public class IncludeTagWritingFilter implements Filter {
 		return builder.toString();
 	}
 
-	private String sanitize(String dirtyString) {
-		if (StringUtils.isBlank(dirtyString)) {
-			return "";
-		} else {
-			return dirtyString.replaceAll("[^0-9a-zA-Z:.\\-/_=]", "");
-		}
+	private Object sanitize(String suffix) {
+		return StringUtils.defaultString(suffix);
 	}
 
 	@Override

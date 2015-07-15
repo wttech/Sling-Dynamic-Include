@@ -15,6 +15,7 @@ import org.apache.felix.scr.annotations.PropertyOption;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.commons.osgi.PropertiesUtil;
+import org.osgi.framework.Constants;
 import org.osgi.service.component.ComponentContext;
 
 /**
@@ -23,20 +24,23 @@ import org.osgi.service.component.ComponentContext;
  * @author tomasz.rekawek
  * 
  */
-@Component(metatype = true, configurationFactory = true, label = "SDI Configuration", immediate = true, policy = ConfigurationPolicy.REQUIRE)
+@Component(metatype = true, configurationFactory = true, 
+	label = "Cognifide : SDI : Configuration", immediate = true, policy = ConfigurationPolicy.REQUIRE)
 @Service(Configuration.class)
 @Properties({
-		@Property(name = Configuration.PROPERTY_FILTER_ENABLED, boolValue = Configuration.DEFAULT_FILTER_ENABLED, label = "Enabled", description = "Check to enable the filter"),
-		@Property(name = Configuration.PROPERTY_FILTER_PATH, value = Configuration.DEFAULT_FILTER_PATH, label = "Base path", description = "This SDI configuration will work only for this path"),
-		@Property(name = Configuration.PROPERTY_FILTER_RESOURCE_TYPES, cardinality = Integer.MAX_VALUE, label = "Resource types", description = "Filter will replace components with selected resource types"),
-		@Property(name = Configuration.PROPERTY_INCLUDE_TYPE, value = Configuration.DEFAULT_INCLUDE_TYPE, label = "Include type", description = "Type of generated include tags", options = {
-				@PropertyOption(name = "SSI", value = "Apache SSI"),
-				@PropertyOption(name = "ESI", value = "ESI"),
-				@PropertyOption(name = "JSI", value = "Javascript") }),
-		@Property(name = Configuration.PROPERTY_ADD_COMMENT, boolValue = Configuration.DEFAULT_ADD_COMMENT, label = "Add comment", description = "Add comment to included components"),
-		@Property(name = Configuration.PROPERTY_FILTER_SELECTOR, value = Configuration.DEFAULT_FILTER_SELECTOR, label = "Filter selector", description = "Selector used to mark included resources"),
-		@Property(name = Configuration.PROPERTY_REQUIRED_HEADER, value = Configuration.DEFAULT_REQUIRED_HEADER, label = "Required header", description = "SDI will work only for requests with given header"),
-		@Property(name = Configuration.PROPERTY_IGNORE_URL_PARAMS, cardinality = Integer.MAX_VALUE, label = "Ignore URL params", description = "SDI will process the request even if it contains configured GET parameters")
+	@Property(name = Constants.SERVICE_VENDOR, value = "Cognifide"),
+	@Property(name = Configuration.PROPERTY_FILTER_ENABLED, boolValue = Configuration.DEFAULT_FILTER_ENABLED, label = "Enabled", description = "Check to enable the filter"),
+	@Property(name = Configuration.PROPERTY_FILTER_PATH, value = Configuration.DEFAULT_FILTER_PATH, label = "Base path", description = "This SDI configuration will work only for this path"),
+	@Property(name = Configuration.PROPERTY_FILTER_RESOURCE_TYPES, cardinality = Integer.MAX_VALUE, label = "Resource types", description = "Filter will replace components with selected resource types"),
+	@Property(name = Configuration.PROPERTY_INCLUDE_TYPE, value = Configuration.DEFAULT_INCLUDE_TYPE, label = "Include type", description = "Type of generated include tags", options = {
+			@PropertyOption(name = "SSI", value = "Apache SSI"),
+			@PropertyOption(name = "ESI", value = "ESI"),
+			@PropertyOption(name = "JSI", value = "Javascript") }),
+	@Property(name = Configuration.PROPERTY_ADD_COMMENT, boolValue = Configuration.DEFAULT_ADD_COMMENT, label = "Add comment", description = "Add comment to included components"),
+	@Property(name = Configuration.PROPERTY_FILTER_SELECTOR, value = Configuration.DEFAULT_FILTER_SELECTOR, label = "Filter selector", description = "Selector used to mark included resources"),
+	@Property(name = Configuration.PROPERTY_REQUIRED_HEADER, value = Configuration.DEFAULT_REQUIRED_HEADER, label = "Required header", description = "SDI will work only for requests with given header"),
+	@Property(name = Configuration.PROPERTY_IGNORE_URL_PARAMS, cardinality = Integer.MAX_VALUE, label = "Ignore URL params", description = "SDI will process the request even if it contains configured GET parameters"),
+	@Property(name = Configuration.PROPERTY_REWRITE_PATH, boolValue = Configuration.DEFAULT_REWRITE_DISABLED, label = "Include path rewriting", description = "Check to enable include path rewriting")
 })
 public class Configuration {
 
@@ -68,6 +72,10 @@ public class Configuration {
 
 	static final String PROPERTY_IGNORE_URL_PARAMS = "include-filter.config.ignoreUrlParams";
 
+	static final String PROPERTY_REWRITE_PATH = "include-filter.config.rewrite";
+	
+	static final boolean DEFAULT_REWRITE_DISABLED = false;
+	
 	private boolean isEnabled;
 
 	private String path;
@@ -83,6 +91,8 @@ public class Configuration {
 	private String requiredHeader;
 
 	private List<String> ignoreUrlParams;
+	
+	private boolean rewritePath;
 
 	@Activate
 	public void activate(ComponentContext context, Map<String, ?> properties) {
@@ -105,6 +115,7 @@ public class Configuration {
 		requiredHeader = PropertiesUtil.toString(properties.get(PROPERTY_REQUIRED_HEADER),
 				DEFAULT_REQUIRED_HEADER);
 		ignoreUrlParams = Arrays.asList(PropertiesUtil.toStringArray(properties.get(PROPERTY_IGNORE_URL_PARAMS), new String[0]));
+		rewritePath = PropertiesUtil.toBoolean(properties.get(PROPERTY_REWRITE_PATH), DEFAULT_REWRITE_DISABLED);
 	}
 
 	public String getBasePath() {
@@ -141,5 +152,9 @@ public class Configuration {
 
 	public List<String> getIgnoreUrlParams() {
 		return ignoreUrlParams;
+	}
+
+	public boolean isRewritePath() {
+		return rewritePath;
 	}
 }

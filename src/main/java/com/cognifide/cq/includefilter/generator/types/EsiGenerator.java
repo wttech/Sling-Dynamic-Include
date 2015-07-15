@@ -1,5 +1,6 @@
 package com.cognifide.cq.includefilter.generator.types;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Service;
 
@@ -25,7 +26,7 @@ public class EsiGenerator implements IncludeGenerator {
 	public String getInclude(String url) {
 		StringBuffer buf = new StringBuffer();
 		buf.append("<esi:include src=\"");
-		buf.append(url);
+		buf.append(StringEscapeUtils.escapeHtml(url));
 		buf.append("\"/>");
 		return buf.toString();
 	}
