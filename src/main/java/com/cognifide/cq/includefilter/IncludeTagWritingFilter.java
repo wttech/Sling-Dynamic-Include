@@ -124,27 +124,30 @@ public class IncludeTagWritingFilter implements Filter {
 
 	private String getUrl(Configuration config, SlingHttpServletRequest request) {
 		String url = buildUrl(config, request);
-		
 		if (config.isRewritePath()) {
+			url = removeQuestionMark(url);
 			url = request.getResourceResolver().map(request, url);
 		}
-		
-		try {
-			return new URI(url).toASCIIString();
-
-		} catch (URISyntaxException e) {
-			LOG.error("Include url in the wrong format", e);
+		else {
+			url = encodeJcrContentPart(url);
+			try {
+				url = new URI(null, null, url, null).toASCIIString();
+			} catch (URISyntaxException e) {
+				LOG.error("Include url is in the wrong format", e);
+				return null;
+			}
 		}
-		return null;
+		
+		return url;
 	}
-	
+
 	private String buildUrl(Configuration config, SlingHttpServletRequest request) {
 		final boolean synthetic = ResourceUtil.isSyntheticResource(request.getResource());
 		final Resource resource = request.getResource();
 		final StringBuilder builder = new StringBuilder();
 		final RequestPathInfo pathInfo = request.getRequestPathInfo();
 
-		final String resourcePath = pathInfo.getResourcePath().replace("jcr:content", "_jcr_content");
+		final String resourcePath = pathInfo.getResourcePath();
 		builder.append(resourcePath);
 		if (pathInfo.getSelectorString() != null) {
 			builder.append('.').append(sanitize(pathInfo.getSelectorString()));
@@ -159,8 +162,16 @@ public class IncludeTagWritingFilter implements Filter {
 		return builder.toString();
 	}
 
-	private Object sanitize(String suffix) {
-		return StringUtils.defaultString(suffix);
+	private static String sanitize(String path) {
+		return StringUtils.defaultString(path);
+	}
+	
+	private static String encodeJcrContentPart(String url) {
+		return url.replace("jcr:content", "_jcr_content");
+	}
+
+	private static String removeQuestionMark(String url) {
+		return url.replaceAll("[?]", "");
 	}
 
 	@Override
