@@ -10,7 +10,7 @@
     <groupId>com.cognifide.cq</groupId>
     <artifactId>sling-dynamic-include</artifactId>
     <name>Sling Dynamic Include</name>
-    <version>2.1.1-SNAPSHOT</version>
+    <version>2.1.2-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <organization>
         <name>Cognifide Polska Sp. z o. o.</name>
