@@ -25,8 +25,18 @@ public class SsiGenerator implements IncludeGenerator {
 	public String getInclude(String url) {
 		StringBuffer buf = new StringBuffer();
 		buf.append("<!--#include virtual=\"");
-		buf.append(url);
+		buf.append(escapeForApache(url));
 		buf.append("\" -->");
 		return buf.toString();
+	}
+
+	/**
+	 * Escapes $ to \$
+	 * 
+	 * @param url url to escape
+	 * @return escaped url
+	 */
+	private Object escapeForApache(String url) {
+		return url.replace("$", "\\$");
 	}
 }
