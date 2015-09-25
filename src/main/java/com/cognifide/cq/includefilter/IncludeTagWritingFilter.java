@@ -67,7 +67,7 @@ public class IncludeTagWritingFilter implements Filter {
 			chain.doFilter(request, response);
 			return;
 		}
-		
+
 		if (config.getAddComment()) {
 			writer.append(String.format(COMMENT, StringEscapeUtils.escapeHtml(url), resourceType));
 		}
@@ -127,8 +127,7 @@ public class IncludeTagWritingFilter implements Filter {
 		if (config.isRewritePath()) {
 			url = removeQuestionMark(url);
 			url = request.getResourceResolver().map(request, url);
-		}
-		else {
+		} else {
 			url = encodeJcrContentPart(url);
 			try {
 				url = new URI(null, null, url, null).toASCIIString();
@@ -137,18 +136,18 @@ public class IncludeTagWritingFilter implements Filter {
 				return null;
 			}
 		}
-		
+
 		return url;
 	}
 
 	private String buildUrl(Configuration config, SlingHttpServletRequest request) {
 		final boolean synthetic = ResourceUtil.isSyntheticResource(request.getResource());
 		final Resource resource = request.getResource();
-		final StringBuilder builder = new StringBuilder();
 		final RequestPathInfo pathInfo = request.getRequestPathInfo();
+		final StringBuilder builder = new StringBuilder(pathInfo.getResourcePath());
 
-		final String resourcePath = pathInfo.getResourcePath();
-		builder.append(resourcePath);
+		analyzeSelectors(config, pathInfo);
+
 		if (pathInfo.getSelectorString() != null) {
 			builder.append('.').append(sanitize(pathInfo.getSelectorString()));
 		}
@@ -162,15 +161,26 @@ public class IncludeTagWritingFilter implements Filter {
 		return builder.toString();
 	}
 
-	private static String sanitize(String path) {
+	private String sanitize(String path) {
 		return StringUtils.defaultString(path);
 	}
-	
-	private static String encodeJcrContentPart(String url) {
+
+	private void analyzeSelectors(Configuration config, RequestPathInfo pathInfo) {
+		for (String selector : pathInfo.getSelectors()) {
+			if (StringUtils.equals(selector, config.getIncludeSelector())) {
+				LOG.error("Include selector <{}> appears more than once. Possible reasons:\n"
+						+ "1. Include tag does not have 'path' attribute.",
+						StringUtils.defaultString(config.getIncludeSelector()));
+				break;
+			}
+		}
+	}
+
+	private String encodeJcrContentPart(String url) {
 		return url.replace("jcr:content", "_jcr_content");
 	}
 
-	private static String removeQuestionMark(String url) {
+	private String removeQuestionMark(String url) {
 		return url.replaceAll("[?]", "");
 	}
 
