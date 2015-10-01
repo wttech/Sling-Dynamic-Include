@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import com.cognifide.cq.includefilter.generator.IncludeGenerator;
 import com.cognifide.cq.includefilter.generator.IncludeGeneratorWhiteboard;
+import org.apache.commons.lang.ArrayUtils;
 
 @SlingFilter(scope = SlingFilterScope.INCLUDE, order = 0)
 public class IncludeTagWritingFilter implements Filter {
@@ -166,13 +167,10 @@ public class IncludeTagWritingFilter implements Filter {
 	}
 
 	private void analyzeSelectors(Configuration config, RequestPathInfo pathInfo) {
-		for (String selector : pathInfo.getSelectors()) {
-			if (StringUtils.equals(selector, config.getIncludeSelector())) {
-				LOG.error("Include selector <{}> appears more than once. Possible reasons:\n"
-						+ "1. Include tag does not have 'path' attribute.",
-						StringUtils.defaultString(config.getIncludeSelector()));
-				break;
-			}
+		if (ArrayUtils.contains(pathInfo.getSelectors(), config.getIncludeSelector())) {
+			LOG.error("Include selector <{}> appears more than once. Possible reasons:\n"
+					+ "1. Include tag does not have 'path' attribute.",
+					StringUtils.defaultString(config.getIncludeSelector()));
 		}
 	}
 
