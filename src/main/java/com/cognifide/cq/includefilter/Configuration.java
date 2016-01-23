@@ -61,8 +61,6 @@ public class Configuration {
 
 	static final String PROPERTY_COMPONENT_TTL = "include-filter.config.ttl";
 	
-	static final String DEFAULT_FILTER_SELECTOR_IF_TTL_SET = "cache";
-	
 	static final String PROPERTY_INCLUDE_TYPE = "include-filter.config.include-type";
 
 	static final String DEFAULT_INCLUDE_TYPE = "SSI";
