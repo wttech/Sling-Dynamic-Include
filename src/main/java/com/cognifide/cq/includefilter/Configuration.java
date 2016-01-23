@@ -38,7 +38,7 @@ import org.osgi.service.component.ComponentContext;
 			@PropertyOption(name = "JSI", value = "Javascript") }),
 	@Property(name = Configuration.PROPERTY_ADD_COMMENT, boolValue = Configuration.DEFAULT_ADD_COMMENT, label = "Add comment", description = "Add comment to included components"),
 	@Property(name = Configuration.PROPERTY_FILTER_SELECTOR, value = Configuration.DEFAULT_FILTER_SELECTOR, label = "Filter selector", description = "Selector used to mark included resources"),
-	@Property(name = Configuration.PROPERTY_COMPONENT_TTL, label = "Component TTL", description = "NOTE: if set, Filter selector is set to \"cache\""),
+	@Property(name = Configuration.PROPERTY_COMPONENT_TTL, label = "Component TTL", description = "\"Time to live\" cache header for rendered component"),
 	@Property(name = Configuration.PROPERTY_REQUIRED_HEADER, value = Configuration.DEFAULT_REQUIRED_HEADER, label = "Required header", description = "SDI will work only for requests with given header"),
 	@Property(name = Configuration.PROPERTY_IGNORE_URL_PARAMS, cardinality = Integer.MAX_VALUE, label = "Ignore URL params", description = "SDI will process the request even if it contains configured GET parameters"),
 	@Property(name = Configuration.PROPERTY_REWRITE_PATH, boolValue = Configuration.DEFAULT_REWRITE_DISABLED, label = "Include path rewriting", description = "Check to enable include path rewriting")
@@ -114,13 +114,9 @@ public class Configuration {
 		}
 		this.resourceTypes = Arrays.asList(resourceTypeList);
 
+		includeSelector = PropertiesUtil.toString(properties.get(PROPERTY_FILTER_SELECTOR),
+				DEFAULT_FILTER_SELECTOR);
 		ttl = PropertiesUtil.toInteger(properties.get(PROPERTY_COMPONENT_TTL), -1);
-		if (hasTtlSet()) {
-			includeSelector = DEFAULT_FILTER_SELECTOR_IF_TTL_SET;
-		} else {
-			includeSelector = PropertiesUtil.toString(properties.get(PROPERTY_FILTER_SELECTOR),
-					DEFAULT_FILTER_SELECTOR);
-		}
 		addComment = PropertiesUtil.toBoolean(properties.get(PROPERTY_ADD_COMMENT), DEFAULT_ADD_COMMENT);
 		includeTypeName = PropertiesUtil
 				.toString(properties.get(PROPERTY_INCLUDE_TYPE), DEFAULT_INCLUDE_TYPE);
