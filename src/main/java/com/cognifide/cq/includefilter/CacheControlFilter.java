@@ -18,11 +18,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @SlingFilter(scope = SlingFilterScope.REQUEST, order = 0)
-public class IncludeComponentFilter implements Filter {
+public class CacheControlFilter implements Filter {
 
 	private static final String HEADER_CACHE_CONTROL = "Cache-Control";
 
-	private static final Logger LOG = LoggerFactory.getLogger(IncludeComponentFilter.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CacheControlFilter.class);
 
 	@Reference
 	private ConfigurationWhiteboard configurationWhiteboard;
@@ -37,7 +37,7 @@ public class IncludeComponentFilter implements Filter {
 		if (config != null && config.hasTtlSet()) {
 			SlingHttpServletResponse slingResponse = (SlingHttpServletResponse) response;
 			slingResponse.setHeader(HEADER_CACHE_CONTROL, "max-age=" + config.getTtl());
-			LOG.debug("set \"{}: max-age={}\" for {}", HEADER_CACHE_CONTROL, config.getTtl(), resourceType);
+			LOG.debug("set \"{}: max-age={}\" to {}", HEADER_CACHE_CONTROL, config.getTtl(), resourceType);
 		}
 
 		chain.doFilter(request, response);
