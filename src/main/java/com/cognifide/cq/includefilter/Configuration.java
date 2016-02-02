@@ -38,6 +38,7 @@ import org.osgi.service.component.ComponentContext;
 			@PropertyOption(name = "JSI", value = "Javascript") }),
 	@Property(name = Configuration.PROPERTY_ADD_COMMENT, boolValue = Configuration.DEFAULT_ADD_COMMENT, label = "Add comment", description = "Add comment to included components"),
 	@Property(name = Configuration.PROPERTY_FILTER_SELECTOR, value = Configuration.DEFAULT_FILTER_SELECTOR, label = "Filter selector", description = "Selector used to mark included resources"),
+	@Property(name = Configuration.PROPERTY_COMPONENT_TTL, label = "Component TTL", description = "\"Time to live\" cache header for rendered component (in seconds)"),
 	@Property(name = Configuration.PROPERTY_REQUIRED_HEADER, value = Configuration.DEFAULT_REQUIRED_HEADER, label = "Required header", description = "SDI will work only for requests with given header"),
 	@Property(name = Configuration.PROPERTY_IGNORE_URL_PARAMS, cardinality = Integer.MAX_VALUE, label = "Ignore URL params", description = "SDI will process the request even if it contains configured GET parameters"),
 	@Property(name = Configuration.PROPERTY_REWRITE_PATH, boolValue = Configuration.DEFAULT_REWRITE_DISABLED, label = "Include path rewriting", description = "Check to enable include path rewriting")
@@ -58,6 +59,8 @@ public class Configuration {
 
 	static final String DEFAULT_FILTER_SELECTOR = "nocache";
 
+	static final String PROPERTY_COMPONENT_TTL = "include-filter.config.ttl";
+	
 	static final String PROPERTY_INCLUDE_TYPE = "include-filter.config.include-type";
 
 	static final String DEFAULT_INCLUDE_TYPE = "SSI";
@@ -81,6 +84,8 @@ public class Configuration {
 	private String path;
 
 	private String includeSelector;
+	
+	private int ttl;
 
 	private List<String> resourceTypes;
 
@@ -109,6 +114,7 @@ public class Configuration {
 
 		includeSelector = PropertiesUtil.toString(properties.get(PROPERTY_FILTER_SELECTOR),
 				DEFAULT_FILTER_SELECTOR);
+		ttl = PropertiesUtil.toInteger(properties.get(PROPERTY_COMPONENT_TTL), -1);
 		addComment = PropertiesUtil.toBoolean(properties.get(PROPERTY_ADD_COMMENT), DEFAULT_ADD_COMMENT);
 		includeTypeName = PropertiesUtil
 				.toString(properties.get(PROPERTY_INCLUDE_TYPE), DEFAULT_INCLUDE_TYPE);
@@ -128,6 +134,14 @@ public class Configuration {
 
 	public String getIncludeSelector() {
 		return includeSelector;
+	}
+	
+	public boolean hasTtlSet() {
+		return ttl >= 0;
+	}
+	
+	public int getTtl() {
+		return ttl;
 	}
 
 	public boolean isSupportedResourceType(String resourceType) {
