@@ -154,3 +154,9 @@ We can:
 * tailor the product to your needs,
 * provide a training for your engineers,
 * support your development teams.
+
+# Release notes
+
+## 2.2.0
+
+#17 Support for time-based (ttl) caching, Dispatcher 4.1.11+ required
