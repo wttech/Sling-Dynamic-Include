@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 import com.cognifide.cq.includefilter.generator.IncludeGenerator;
 import com.cognifide.cq.includefilter.generator.IncludeGeneratorWhiteboard;
 
-@SlingFilter(scope = SlingFilterScope.INCLUDE, order = 0)
+@SlingFilter(scope = SlingFilterScope.INCLUDE, order = -500)
 public class IncludeTagWritingFilter implements Filter {
 
 	private static final Logger LOG = LoggerFactory.getLogger(IncludeTagWritingFilter.class);
