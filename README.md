@@ -159,4 +159,4 @@ We can:
 
 ## 2.2.0
 
-\#17 Support for time-based (ttl) caching, Dispatcher 4.1.11+ required
+\#17 Support for time-based (TTL) caching, Dispatcher 4.1.11+ required
