@@ -1,9 +1,8 @@
-package com.cognifide.cq.includefilter.generator.types;
+package org.apache.sling.dynamicinclude.generator.types;
 
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Service;
-
-import com.cognifide.cq.includefilter.generator.IncludeGenerator;
+import org.apache.sling.dynamicinclude.generator.IncludeGenerator;
 
 /**
  * Apache SSI include generator

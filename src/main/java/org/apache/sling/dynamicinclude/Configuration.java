@@ -1,4 +1,4 @@
-package com.cognifide.cq.includefilter;
+package org.apache.sling.dynamicinclude;
 
 import java.util.Arrays;
 import java.util.List;

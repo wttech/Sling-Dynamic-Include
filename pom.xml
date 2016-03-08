@@ -7,42 +7,23 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.cognifide.cq</groupId>
-    <artifactId>sling-dynamic-include</artifactId>
-    <name>Sling Dynamic Include</name>
+    <groupId>org.apache.sling</groupId>
+    <artifactId>dynamic-include</artifactId>
     <version>2.2.1-SNAPSHOT</version>
     <packaging>bundle</packaging>
-    <organization>
-        <name>Cognifide Polska Sp. z o. o.</name>
-        <url>http://cognifide.com</url>
-    </organization>
-
+    
+    <name>Sling Dynamic Include</name>
     <description>Dynamic include filter for Apache Sling</description>
-    <url>https://github.com/Cognifide/Sling-Dynamic-Include</url>
-    <licenses>
-        <license>
-            <name>The Apache Software License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <sling.url>http://localhost:4502/system/console</sling.url>
-        <sling.username>admin</sling.username>
-        <sling.password>admin</sling.password>
-    </properties>
 
     <scm>
-        <connection>scm:git:git@github.com:Cognifide/Sling-Dynamic-Include.git</connection>
-        <url>scm:git:git@github.com:Cognifide/Sling-Dynamic-Include.git</url>
-        <developerConnection>scm:git:git@github.com:Cognifide/Sling-Dynamic-Include.git</developerConnection>
-    </scm>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/sling/trunk/contrib/extensions/dynamic-include</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/sling/trunk/contrib/extensions/dynamic-include</developerConnection>
+        <url>http://svn.apache.org/viewvc/sling/trunk/contrib/extensions/dynamic-include</url>
+    </scm>    
 
     <developers>
         <developer>
-            <id>paco</id>
+            <id>pacoolsky</id>
             <name>Przemyslaw Pakulski</name>
             <email>przemo.pakulski@cognifide.com</email>
         </developer>
@@ -86,7 +67,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Export-Package>com.cognifide.cq.includefilter.*</Export-Package>
+                        <Export-Package>org.apache.sling.dynamicinclude.*</Export-Package>
                         <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.name}</Bundle-Name>
                         <Bundle-Vendor>Cognifide Ltd.</Bundle-Vendor>
@@ -174,33 +155,4 @@
         </dependency>
     </dependencies>
 
-    <profiles>
-        <profile>
-            <id>release-sign-artifacts</id>
-            <activation>
-                <property>
-                    <name>performRelease</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.4</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>

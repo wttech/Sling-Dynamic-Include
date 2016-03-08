@@ -1,4 +1,4 @@
-package com.cognifide.cq.includefilter.generator;
+package org.apache.sling.dynamicinclude.generator;
 
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;

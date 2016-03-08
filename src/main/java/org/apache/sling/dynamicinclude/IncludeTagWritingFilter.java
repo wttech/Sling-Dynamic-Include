@@ -1,4 +1,4 @@
-package com.cognifide.cq.includefilter;
+package org.apache.sling.dynamicinclude;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -23,11 +23,10 @@ import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.request.RequestPathInfo;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceUtil;
+import org.apache.sling.dynamicinclude.generator.IncludeGenerator;
+import org.apache.sling.dynamicinclude.generator.IncludeGeneratorWhiteboard;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.cognifide.cq.includefilter.generator.IncludeGenerator;
-import com.cognifide.cq.includefilter.generator.IncludeGeneratorWhiteboard;
 
 @SlingFilter(scope = SlingFilterScope.INCLUDE, order = -500)
 public class IncludeTagWritingFilter implements Filter {
