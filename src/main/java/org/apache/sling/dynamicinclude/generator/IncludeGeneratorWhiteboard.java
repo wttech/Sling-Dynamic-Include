@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- */ 
+ */
 
 package org.apache.sling.dynamicinclude.generator;
 
@@ -38,24 +38,24 @@ import org.apache.felix.scr.annotations.Service;
 @Service(IncludeGeneratorWhiteboard.class)
 public class IncludeGeneratorWhiteboard {
 
-	@Reference(referenceInterface = IncludeGenerator.class, cardinality = ReferenceCardinality.MANDATORY_MULTIPLE, policy = ReferencePolicy.DYNAMIC)
-	private Set<IncludeGenerator> generators = new CopyOnWriteArraySet<IncludeGenerator>();
+    @Reference(referenceInterface = IncludeGenerator.class, cardinality = ReferenceCardinality.MANDATORY_MULTIPLE, policy = ReferencePolicy.DYNAMIC)
+    private Set<IncludeGenerator> generators = new CopyOnWriteArraySet<IncludeGenerator>();
 
-	public IncludeGenerator getGenerator(String type) {
-		for (IncludeGenerator generator : generators) {
-			if (type.equals(generator.getType())) {
-				return generator;
-			}
-		}
-		return null;
-	}
+    public IncludeGenerator getGenerator(String type) {
+        for (IncludeGenerator generator : generators) {
+            if (type.equals(generator.getType())) {
+                return generator;
+            }
+        }
+        return null;
+    }
 
-	void bindGenerators(IncludeGenerator generator) {
-		generators.add(generator);
-	}
+    void bindGenerators(IncludeGenerator generator) {
+        generators.add(generator);
+    }
 
-	void unbindGenerators(IncludeGenerator generator) {
-		generators.remove(generator);
-	}
+    void unbindGenerators(IncludeGenerator generator) {
+        generators.remove(generator);
+    }
 
 }

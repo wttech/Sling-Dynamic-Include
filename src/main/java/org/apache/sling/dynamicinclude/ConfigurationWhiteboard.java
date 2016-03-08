@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- */ 
+ */
 
 package org.apache.sling.dynamicinclude;
 
@@ -34,28 +34,33 @@ import org.apache.sling.api.SlingHttpServletRequest;
 @Service(ConfigurationWhiteboard.class)
 public class ConfigurationWhiteboard {
 
-	@Reference(referenceInterface = Configuration.class, cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE, policy = ReferencePolicy.DYNAMIC)
-	private Set<Configuration> configs = new CopyOnWriteArraySet<Configuration>();
+    @Reference(referenceInterface = Configuration.class, cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE, policy = ReferencePolicy.DYNAMIC)
+    private Set<Configuration> configs = new CopyOnWriteArraySet<Configuration>();
 
-	public Configuration getConfiguration(SlingHttpServletRequest request, String resourceType) {
-		for (Configuration c : configs) {
-			if (isEnabled(c, request) && c.isSupportedResourceType(resourceType)) {
-				return c;
-			}
-		}
-		return null;
-	}
+    public Configuration getConfiguration(SlingHttpServletRequest request,
+            String resourceType) {
+        for (Configuration c : configs) {
+            if (isEnabled(c, request)
+                    && c.isSupportedResourceType(resourceType)) {
+                return c;
+            }
+        }
+        return null;
+    }
 
-	private boolean isEnabled(Configuration config, SlingHttpServletRequest request) {
-		final String requestPath = request.getRequestPathInfo().getResourcePath();
-		return config.isEnabled() && StringUtils.startsWith(requestPath, config.getBasePath());
-	}
+    private boolean isEnabled(Configuration config,
+            SlingHttpServletRequest request) {
+        final String requestPath = request.getRequestPathInfo()
+                .getResourcePath();
+        return config.isEnabled()
+                && StringUtils.startsWith(requestPath, config.getBasePath());
+    }
 
-	protected void bindConfigs(final Configuration config) {
-		configs.add(config);
-	}
+    protected void bindConfigs(final Configuration config) {
+        configs.add(config);
+    }
 
-	protected void unbindConfigs(final Configuration config) {
-		configs.remove(config);
-	}
+    protected void unbindConfigs(final Configuration config) {
+        configs.remove(config);
+    }
 }

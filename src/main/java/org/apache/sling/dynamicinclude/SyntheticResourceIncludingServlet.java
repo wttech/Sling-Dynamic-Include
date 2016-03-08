@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- */ 
+ */
 
 package org.apache.sling.dynamicinclude;
 
@@ -39,38 +39,41 @@ import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
  * @author miroslaw.stawniak
  *
  */
-//@SlingServlet(resourceTypes = "sling:nonexisting", methods="GET")
-public class SyntheticResourceIncludingServlet extends SlingSafeMethodsServlet implements OptingServlet {
+// @SlingServlet(resourceTypes = "sling:nonexisting", methods="GET")
+public class SyntheticResourceIncludingServlet extends SlingSafeMethodsServlet
+        implements OptingServlet {
 
-	private static final long serialVersionUID = 1L;
-	
-	@Reference
-	private ConfigurationWhiteboard configurationWhiteboard;
-	
-	@Override
-	protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response)
-			throws ServletException, IOException {
-		
-		final String resourceType = getResourceTypeFromSuffix(request);
-		
-		final RequestDispatcherOptions options = new RequestDispatcherOptions();
-		options.setForceResourceType(resourceType);
-		final RequestDispatcher dispatcher = request.getRequestDispatcher(request.getResource(),
-				options);
-		dispatcher.forward(request, response);
-	}
+    private static final long serialVersionUID = 1L;
 
-	@Override
-	public boolean accepts(SlingHttpServletRequest request) {
-		final String resourceType = getResourceTypeFromSuffix(request);
-		final Configuration config = configurationWhiteboard.getConfiguration(request, resourceType);
+    @Reference
+    private ConfigurationWhiteboard configurationWhiteboard;
 
-		return config != null
-				&& config.hasIncludeSelector(request);
-	}
+    @Override
+    protected void doGet(SlingHttpServletRequest request,
+            SlingHttpServletResponse response) throws ServletException,
+            IOException {
 
-	private static String getResourceTypeFromSuffix(SlingHttpServletRequest request) {
-		final String suffix = request.getRequestPathInfo().getSuffix();
-		return StringUtils.removeStart(suffix, "/");
-	}
+        final String resourceType = getResourceTypeFromSuffix(request);
+
+        final RequestDispatcherOptions options = new RequestDispatcherOptions();
+        options.setForceResourceType(resourceType);
+        final RequestDispatcher dispatcher = request.getRequestDispatcher(
+                request.getResource(), options);
+        dispatcher.forward(request, response);
+    }
+
+    @Override
+    public boolean accepts(SlingHttpServletRequest request) {
+        final String resourceType = getResourceTypeFromSuffix(request);
+        final Configuration config = configurationWhiteboard.getConfiguration(
+                request, resourceType);
+
+        return config != null && config.hasIncludeSelector(request);
+    }
+
+    private static String getResourceTypeFromSuffix(
+            SlingHttpServletRequest request) {
+        final String suffix = request.getRequestPathInfo().getSuffix();
+        return StringUtils.removeStart(suffix, "/");
+    }
 }

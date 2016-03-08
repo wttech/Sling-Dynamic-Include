@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- */ 
+ */
 
 package org.apache.sling.dynamicinclude.generator;
 
@@ -26,7 +26,7 @@ package org.apache.sling.dynamicinclude.generator;
  * 
  */
 public interface IncludeGenerator {
-	String getType();
+    String getType();
 
-	String getInclude(String url);
+    String getInclude(String url);
 }

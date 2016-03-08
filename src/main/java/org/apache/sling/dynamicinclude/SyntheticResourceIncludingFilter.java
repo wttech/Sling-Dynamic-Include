@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- */ 
+ */
 
 package org.apache.sling.dynamicinclude;
 
@@ -41,49 +41,51 @@ import org.apache.sling.api.resource.ResourceUtil;
 import org.apache.sling.engine.EngineConstants;
 import org.osgi.framework.Constants;
 
-@Component(metatype = true, label="Sling Dynamic Include : Synthetic Resource Include Filter")
+@Component(metatype = true, label = "Sling Dynamic Include : Synthetic Resource Include Filter")
 @Service
 @Properties({
-	@Property(name = Constants.SERVICE_VENDOR, value = "The Apache Software Foundation"),
-	@Property(name = EngineConstants.SLING_FILTER_SCOPE, value = EngineConstants.FILTER_SCOPE_REQUEST, propertyPrivate = true),
-	@Property(name = Constants.SERVICE_RANKING, intValue = Integer.MIN_VALUE, propertyPrivate = false),
-})
+        @Property(name = Constants.SERVICE_VENDOR, value = "The Apache Software Foundation"),
+        @Property(name = EngineConstants.SLING_FILTER_SCOPE, value = EngineConstants.FILTER_SCOPE_REQUEST, propertyPrivate = true),
+        @Property(name = Constants.SERVICE_RANKING, intValue = Integer.MIN_VALUE, propertyPrivate = false), })
 public class SyntheticResourceIncludingFilter implements Filter {
 
-	@Reference
-	private ConfigurationWhiteboard configurationWhiteboard;
+    @Reference
+    private ConfigurationWhiteboard configurationWhiteboard;
 
-	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-			throws IOException, ServletException {
-		final SlingHttpServletRequest slingRequest = (SlingHttpServletRequest) request;
-		final String resourceType = getResourceTypeFromSuffix(slingRequest);
-		final Configuration config = configurationWhiteboard.getConfiguration(slingRequest, resourceType);
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response,
+            FilterChain chain) throws IOException, ServletException {
+        final SlingHttpServletRequest slingRequest = (SlingHttpServletRequest) request;
+        final String resourceType = getResourceTypeFromSuffix(slingRequest);
+        final Configuration config = configurationWhiteboard.getConfiguration(
+                slingRequest, resourceType);
 
-		if (config == null
-				|| !config.hasIncludeSelector(slingRequest)
-				|| !ResourceUtil.isSyntheticResource(slingRequest.getResource())) {
-			chain.doFilter(request, response);
-			return;
-		}
+        if (config == null
+                || !config.hasIncludeSelector(slingRequest)
+                || !ResourceUtil
+                        .isSyntheticResource(slingRequest.getResource())) {
+            chain.doFilter(request, response);
+            return;
+        }
 
-		final RequestDispatcherOptions options = new RequestDispatcherOptions();
-		options.setForceResourceType(resourceType);
-		final RequestDispatcher dispatcher = slingRequest.getRequestDispatcher(slingRequest.getResource(),
-				options);
-		dispatcher.forward(request, response);
-	}
+        final RequestDispatcherOptions options = new RequestDispatcherOptions();
+        options.setForceResourceType(resourceType);
+        final RequestDispatcher dispatcher = slingRequest.getRequestDispatcher(
+                slingRequest.getResource(), options);
+        dispatcher.forward(request, response);
+    }
 
-	private static String getResourceTypeFromSuffix(SlingHttpServletRequest request) {
-		final String suffix = request.getRequestPathInfo().getSuffix();
-		return StringUtils.removeStart(suffix, "/");
-	}
+    private static String getResourceTypeFromSuffix(
+            SlingHttpServletRequest request) {
+        final String suffix = request.getRequestPathInfo().getSuffix();
+        return StringUtils.removeStart(suffix, "/");
+    }
 
-	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {
-	}
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+    }
 
-	@Override
-	public void destroy() {
-	}
+    @Override
+    public void destroy() {
+    }
 }

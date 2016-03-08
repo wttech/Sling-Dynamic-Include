@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- */ 
+ */
 
 package org.apache.sling.dynamicinclude.generator.types;
 
@@ -43,76 +43,77 @@ import org.slf4j.LoggerFactory;
 @Component
 @Service
 public class JsiGenerator implements IncludeGenerator {
-	private static final String TEMPLATE_FILENAME = "generators/jquery.html";
+    private static final String TEMPLATE_FILENAME = "generators/jquery.html";
 
-	private static final String UUID_FIELD = "${uniqueId}";
+    private static final String UUID_FIELD = "${uniqueId}";
 
-	private static final String URL_FIELD = "${url}";
+    private static final String URL_FIELD = "${url}";
 
-	private static final Logger LOG = LoggerFactory.getLogger(JsiGenerator.class);
-	
-	private static final String GENERATOR_NAME = "JSI";
+    private static final Logger LOG = LoggerFactory
+            .getLogger(JsiGenerator.class);
 
-	private volatile int divId = 1000;
+    private static final String GENERATOR_NAME = "JSI";
 
-	private String template;
+    private volatile int divId = 1000;
 
-	@Activate
-	public void activate(ComponentContext ctx) {
-		URL url = ctx.getBundleContext().getBundle().getResource(TEMPLATE_FILENAME);
-		if (url == null) {
-			LOG.error("File " + TEMPLATE_FILENAME + " not found in bundle.");
-			return;
-		}
-		readTemplateFromUrl(url);
-	}
-	
-	@Override
-	public String getType() {
-		return GENERATOR_NAME;
-	}
-	
-	@Override
-	public String getInclude(String url) {
-		if (template == null) {
-			throw new IllegalStateException("JSI generator hasn't be initialized");
-		}
+    private String template;
 
-		String divName;
-		synchronized (this) {
-			divName = "dynamic_include_filter_div_" + divId++;
-		}
-		
-		return template
-				.replace(UUID_FIELD, divName)
-				.replace(URL_FIELD, StringEscapeUtils.escapeJavaScript(url));
-	}
+    @Activate
+    public void activate(ComponentContext ctx) {
+        URL url = ctx.getBundleContext().getBundle()
+                .getResource(TEMPLATE_FILENAME);
+        if (url == null) {
+            LOG.error("File " + TEMPLATE_FILENAME + " not found in bundle.");
+            return;
+        }
+        readTemplateFromUrl(url);
+    }
 
+    @Override
+    public String getType() {
+        return GENERATOR_NAME;
+    }
 
-	private void readTemplateFromUrl(URL url) {
-		BufferedReader br = null;
-		try {
-			InputStream in = url.openStream();
-			br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-			StringBuilder builder = new StringBuilder();
-			String line;
-			while ((line = br.readLine()) != null) {
-				builder.append(line).append('\n');
-			}
-			template = builder.toString();
-		} catch (UnsupportedEncodingException e) {
-			LOG.error("Error while reading template", e);
-		} catch (IOException e) {
-			LOG.error("Error while reading template", e);
-		} finally {
-			try {
-				if (br != null) {
-					br.close();
-				}
-			} catch (Exception e) {
-				LOG.error("Error while closing reader", e);
-			}
-		}
-	}
+    @Override
+    public String getInclude(String url) {
+        if (template == null) {
+            throw new IllegalStateException(
+                    "JSI generator hasn't be initialized");
+        }
+
+        String divName;
+        synchronized (this) {
+            divName = "dynamic_include_filter_div_" + divId++;
+        }
+
+        return template.replace(UUID_FIELD, divName).replace(URL_FIELD,
+                StringEscapeUtils.escapeJavaScript(url));
+    }
+
+    private void readTemplateFromUrl(URL url) {
+        BufferedReader br = null;
+        try {
+            InputStream in = url.openStream();
+            br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+            StringBuilder builder = new StringBuilder();
+            String line;
+            while ((line = br.readLine()) != null) {
+                builder.append(line).append('\n');
+            }
+            template = builder.toString();
+        } catch (UnsupportedEncodingException e) {
+            LOG.error("Error while reading template", e);
+        } catch (IOException e) {
+            LOG.error("Error while reading template", e);
+        } finally {
+            try {
+                if (br != null) {
+                    br.close();
+                }
+            } catch (Exception e) {
+                LOG.error("Error while closing reader", e);
+            }
+        }
+    }
 
 }

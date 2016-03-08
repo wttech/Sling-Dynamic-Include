@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- */ 
+ */
 
 package org.apache.sling.dynamicinclude.generator.types;
 
@@ -32,29 +32,30 @@ import org.apache.sling.dynamicinclude.generator.IncludeGenerator;
 @Component
 @Service
 public class SsiGenerator implements IncludeGenerator {
-	private static final String GENERATOR_NAME = "SSI";
-	
-	@Override
-	public String getType() {
-		return GENERATOR_NAME;
-	}
-	
-	@Override
-	public String getInclude(String url) {
-		StringBuffer buf = new StringBuffer();
-		buf.append("<!--#include virtual=\"");
-		buf.append(escapeForApache(url));
-		buf.append("\" -->");
-		return buf.toString();
-	}
+    private static final String GENERATOR_NAME = "SSI";
 
-	/**
-	 * Escapes $ to \$
-	 * 
-	 * @param url url to escape
-	 * @return escaped url
-	 */
-	private Object escapeForApache(String url) {
-		return url.replace("$", "\\$");
-	}
+    @Override
+    public String getType() {
+        return GENERATOR_NAME;
+    }
+
+    @Override
+    public String getInclude(String url) {
+        StringBuffer buf = new StringBuffer();
+        buf.append("<!--#include virtual=\"");
+        buf.append(escapeForApache(url));
+        buf.append("\" -->");
+        return buf.toString();
+    }
+
+    /**
+     * Escapes $ to \$
+     * 
+     * @param url
+     *            url to escape
+     * @return escaped url
+     */
+    private Object escapeForApache(String url) {
+        return url.replace("$", "\\$");
+    }
 }

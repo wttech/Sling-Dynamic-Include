@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- */ 
+ */
 
 package org.apache.sling.dynamicinclude.generator.types;
 
@@ -33,19 +33,19 @@ import org.apache.sling.dynamicinclude.generator.IncludeGenerator;
 @Component
 @Service
 public class EsiGenerator implements IncludeGenerator {
-	private static final String GENERATOR_NAME = "ESI";
-	
-	@Override
-	public String getType() {
-		return GENERATOR_NAME;
-	}
-	
-	@Override
-	public String getInclude(String url) {
-		StringBuffer buf = new StringBuffer();
-		buf.append("<esi:include src=\"");
-		buf.append(StringEscapeUtils.escapeHtml(url));
-		buf.append("\"/>");
-		return buf.toString();
-	}
+    private static final String GENERATOR_NAME = "ESI";
+
+    @Override
+    public String getType() {
+        return GENERATOR_NAME;
+    }
+
+    @Override
+    public String getInclude(String url) {
+        StringBuffer buf = new StringBuffer();
+        buf.append("<esi:include src=\"");
+        buf.append(StringEscapeUtils.escapeHtml(url));
+        buf.append("\"/>");
+        return buf.toString();
+    }
 }

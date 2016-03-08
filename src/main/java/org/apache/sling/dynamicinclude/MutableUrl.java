@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- */ 
+ */
 
 package org.apache.sling.dynamicinclude;
 
@@ -27,135 +27,138 @@ import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.request.RequestPathInfo;
 
 /**
- * Class providing useful methods for URL manipulation (add/remove selector, set default extension, change
- * suffix, etc.)
+ * Class providing useful methods for URL manipulation (add/remove selector, set
+ * default extension, change suffix, etc.)
  * 
  * @author tomasz.rekawek
  * 
  */
 public class MutableUrl {
-	private final RequestPathInfo originalPathInfo;
+    private final RequestPathInfo originalPathInfo;
 
-	private List<String> selectorsToRemove;
+    private List<String> selectorsToRemove;
 
-	private List<String> selectorsToAdd;
+    private List<String> selectorsToAdd;
 
-	private String replaceSuffix;
+    private String replaceSuffix;
 
-	private String replaceExt;
+    private String replaceExt;
 
-	private String replacePath;
+    private String replacePath;
 
-	private String defaultExt;
-	
-	private boolean escapeNamespace;
+    private String defaultExt;
 
-	public MutableUrl(SlingHttpServletRequest request, boolean escapeNamespace) {
-		originalPathInfo = request.getRequestPathInfo();
-		selectorsToAdd = new ArrayList<String>();
-		selectorsToRemove = new ArrayList<String>();
-		this.escapeNamespace = escapeNamespace;
-	}
+    private boolean escapeNamespace;
 
-	public void addSelector(String selector) {
-		selectorsToAdd.add(selector);
-		selectorsToRemove.remove(selector);
-	}
+    public MutableUrl(SlingHttpServletRequest request, boolean escapeNamespace) {
+        originalPathInfo = request.getRequestPathInfo();
+        selectorsToAdd = new ArrayList<String>();
+        selectorsToRemove = new ArrayList<String>();
+        this.escapeNamespace = escapeNamespace;
+    }
 
-	public void removeSelector(String selector) {
-		selectorsToRemove.add(selector);
-		selectorsToAdd.remove(selector);
-	}
+    public void addSelector(String selector) {
+        selectorsToAdd.add(selector);
+        selectorsToRemove.remove(selector);
+    }
 
-	public void replacePath(String path) {
-		replacePath = path;
-	}
+    public void removeSelector(String selector) {
+        selectorsToRemove.add(selector);
+        selectorsToAdd.remove(selector);
+    }
 
-	public void replaceSuffix(String suffix) {
-		replaceSuffix = suffix;
-	}
+    public void replacePath(String path) {
+        replacePath = path;
+    }
 
-	public void setDefaultExtension(String extension) {
-		defaultExt = extension;
-	}
+    public void replaceSuffix(String suffix) {
+        replaceSuffix = suffix;
+    }
 
-	public void replaceExtension(String extension) {
-		replaceExt = extension;
-	}
+    public void setDefaultExtension(String extension) {
+        defaultExt = extension;
+    }
 
-	public String getPath() {
-		String resPath;
+    public void replaceExtension(String extension) {
+        replaceExt = extension;
+    }
 
-		if (replacePath != null) {
-			resPath = replacePath;
-		} else {
-			resPath = originalPathInfo.getResourcePath();
-		}
+    public String getPath() {
+        String resPath;
 
-		// According to
-		// http://sling.apache.org/apidocs/sling5/org/apache/sling/api/request/RequestPathInfo.html
-		// it shouldn't contain dot or slash. Unfortunately, sometimes contains - especially if the resource
-		// doesn't exist.
-		if (resPath.contains(".")) {
-			resPath = resPath.substring(0, resPath.indexOf('.'));
-		}
-		return resPath;
-	}
+        if (replacePath != null) {
+            resPath = replacePath;
+        } else {
+            resPath = originalPathInfo.getResourcePath();
+        }
 
-	@Override
-	public String toString() {
-		StringBuffer buf = new StringBuffer();
-		buf.append(getPath());
-		buildSelectors(buf);
+        // According to
+        // http://sling.apache.org/apidocs/sling5/org/apache/sling/api/request/RequestPathInfo.html
+        // it shouldn't contain dot or slash. Unfortunately, sometimes contains
+        // - especially if the resource
+        // doesn't exist.
+        if (resPath.contains(".")) {
+            resPath = resPath.substring(0, resPath.indexOf('.'));
+        }
+        return resPath;
+    }
 
-		if (replaceExt != null) {
-			if (!replaceExt.isEmpty()) {
-				buf.append('.');
-				buf.append(replaceExt);
-			}
-		} else if (originalPathInfo.getExtension() == null && defaultExt != null) {
-			buf.append('.');
-			buf.append(defaultExt);
-		} else if (originalPathInfo.getExtension() != null) {
-			buf.append('.');
-			buf.append(originalPathInfo.getExtension());
-		}
+    @Override
+    public String toString() {
+        StringBuffer buf = new StringBuffer();
+        buf.append(getPath());
+        buildSelectors(buf);
 
-		if (replaceSuffix != null) {
-			if (!replaceSuffix.isEmpty()) {
-				buf.append('/');
-				buf.append(sanitize(replaceSuffix));
-			}
-		} else if (originalPathInfo.getSuffix() != null) {
-			buf.append(sanitize(originalPathInfo.getSuffix()));
-		}
+        if (replaceExt != null) {
+            if (!replaceExt.isEmpty()) {
+                buf.append('.');
+                buf.append(replaceExt);
+            }
+        } else if (originalPathInfo.getExtension() == null
+                && defaultExt != null) {
+            buf.append('.');
+            buf.append(defaultExt);
+        } else if (originalPathInfo.getExtension() != null) {
+            buf.append('.');
+            buf.append(originalPathInfo.getExtension());
+        }
 
-		String url = buf.toString();
-		if(escapeNamespace) {
-			url = url.replaceAll("(\\w+):(\\w+)", "_$1_$2");
-		}
-		return url;
-	}
+        if (replaceSuffix != null) {
+            if (!replaceSuffix.isEmpty()) {
+                buf.append('/');
+                buf.append(sanitize(replaceSuffix));
+            }
+        } else if (originalPathInfo.getSuffix() != null) {
+            buf.append(sanitize(originalPathInfo.getSuffix()));
+        }
 
-	private void buildSelectors(StringBuffer buf) {
-		String[] selectors = originalPathInfo.getSelectors();
-		for (String sel : selectors) {
-			if (!selectorsToRemove.contains(sel) && !selectorsToAdd.contains(sel)) {
-				buf.append('.');
-				buf.append(sanitize(sel));
-			}
-		}
-		for (String sel : selectorsToAdd) {
-			buf.append('.');
-			buf.append(sanitize(sel));
-		}
-	}
+        String url = buf.toString();
+        if (escapeNamespace) {
+            url = url.replaceAll("(\\w+):(\\w+)", "_$1_$2");
+        }
+        return url;
+    }
 
-	private static String sanitize(String dirtyString) {
-		if (StringUtils.isBlank(dirtyString)) {
-			return "";
-		} else {
-			return dirtyString.replaceAll("[^0-9a-zA-Z:.\\-/_=]", "");
-		}
-	}
+    private void buildSelectors(StringBuffer buf) {
+        String[] selectors = originalPathInfo.getSelectors();
+        for (String sel : selectors) {
+            if (!selectorsToRemove.contains(sel)
+                    && !selectorsToAdd.contains(sel)) {
+                buf.append('.');
+                buf.append(sanitize(sel));
+            }
+        }
+        for (String sel : selectorsToAdd) {
+            buf.append('.');
+            buf.append(sanitize(sel));
+        }
+    }
+
+    private static String sanitize(String dirtyString) {
+        if (StringUtils.isBlank(dirtyString)) {
+            return "";
+        } else {
+            return dirtyString.replaceAll("[^0-9a-zA-Z:.\\-/_=]", "");
+        }
+    }
 }
