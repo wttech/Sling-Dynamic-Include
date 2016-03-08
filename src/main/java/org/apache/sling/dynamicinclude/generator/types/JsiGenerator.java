@@ -49,8 +49,7 @@ public class JsiGenerator implements IncludeGenerator {
 
     private static final String URL_FIELD = "${url}";
 
-    private static final Logger LOG = LoggerFactory
-            .getLogger(JsiGenerator.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JsiGenerator.class);
 
     private static final String GENERATOR_NAME = "JSI";
 
@@ -60,8 +59,7 @@ public class JsiGenerator implements IncludeGenerator {
 
     @Activate
     public void activate(ComponentContext ctx) {
-        URL url = ctx.getBundleContext().getBundle()
-                .getResource(TEMPLATE_FILENAME);
+        URL url = ctx.getBundleContext().getBundle().getResource(TEMPLATE_FILENAME);
         if (url == null) {
             LOG.error("File " + TEMPLATE_FILENAME + " not found in bundle.");
             return;
@@ -77,8 +75,7 @@ public class JsiGenerator implements IncludeGenerator {
     @Override
     public String getInclude(String url) {
         if (template == null) {
-            throw new IllegalStateException(
-                    "JSI generator hasn't be initialized");
+            throw new IllegalStateException("JSI generator hasn't be initialized");
         }
 
         String divName;
@@ -86,8 +83,7 @@ public class JsiGenerator implements IncludeGenerator {
             divName = "dynamic_include_filter_div_" + divId++;
         }
 
-        return template.replace(UUID_FIELD, divName).replace(URL_FIELD,
-                StringEscapeUtils.escapeJavaScript(url));
+        return template.replace(UUID_FIELD, divName).replace(URL_FIELD, StringEscapeUtils.escapeJavaScript(url));
     }
 
     private void readTemplateFromUrl(URL url) {

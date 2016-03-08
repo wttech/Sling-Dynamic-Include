@@ -53,30 +53,25 @@ public class SyntheticResourceIncludingFilter implements Filter {
     private ConfigurationWhiteboard configurationWhiteboard;
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response,
-            FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
+            ServletException {
         final SlingHttpServletRequest slingRequest = (SlingHttpServletRequest) request;
         final String resourceType = getResourceTypeFromSuffix(slingRequest);
-        final Configuration config = configurationWhiteboard.getConfiguration(
-                slingRequest, resourceType);
+        final Configuration config = configurationWhiteboard.getConfiguration(slingRequest, resourceType);
 
-        if (config == null
-                || !config.hasIncludeSelector(slingRequest)
-                || !ResourceUtil
-                        .isSyntheticResource(slingRequest.getResource())) {
+        if (config == null || !config.hasIncludeSelector(slingRequest)
+                || !ResourceUtil.isSyntheticResource(slingRequest.getResource())) {
             chain.doFilter(request, response);
             return;
         }
 
         final RequestDispatcherOptions options = new RequestDispatcherOptions();
         options.setForceResourceType(resourceType);
-        final RequestDispatcher dispatcher = slingRequest.getRequestDispatcher(
-                slingRequest.getResource(), options);
+        final RequestDispatcher dispatcher = slingRequest.getRequestDispatcher(slingRequest.getResource(), options);
         dispatcher.forward(request, response);
     }
 
-    private static String getResourceTypeFromSuffix(
-            SlingHttpServletRequest request) {
+    private static String getResourceTypeFromSuffix(SlingHttpServletRequest request) {
         final String suffix = request.getRequestPathInfo().getSuffix();
         return StringUtils.removeStart(suffix, "/");
     }

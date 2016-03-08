@@ -114,8 +114,7 @@ public class MutableUrl {
                 buf.append('.');
                 buf.append(replaceExt);
             }
-        } else if (originalPathInfo.getExtension() == null
-                && defaultExt != null) {
+        } else if (originalPathInfo.getExtension() == null && defaultExt != null) {
             buf.append('.');
             buf.append(defaultExt);
         } else if (originalPathInfo.getExtension() != null) {
@@ -142,8 +141,7 @@ public class MutableUrl {
     private void buildSelectors(StringBuffer buf) {
         String[] selectors = originalPathInfo.getSelectors();
         for (String sel : selectors) {
-            if (!selectorsToRemove.contains(sel)
-                    && !selectorsToAdd.contains(sel)) {
+            if (!selectorsToRemove.contains(sel) && !selectorsToAdd.contains(sel)) {
                 buf.append('.');
                 buf.append(sanitize(sel));
             }

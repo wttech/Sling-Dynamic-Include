@@ -51,8 +51,7 @@ import org.osgi.service.component.ComponentContext;
         @Property(name = Configuration.PROPERTY_FILTER_PATH, value = Configuration.DEFAULT_FILTER_PATH, label = "Base path", description = "This SDI configuration will work only for this path"),
         @Property(name = Configuration.PROPERTY_FILTER_RESOURCE_TYPES, cardinality = Integer.MAX_VALUE, label = "Resource types", description = "Filter will replace components with selected resource types"),
         @Property(name = Configuration.PROPERTY_INCLUDE_TYPE, value = Configuration.DEFAULT_INCLUDE_TYPE, label = "Include type", description = "Type of generated include tags", options = {
-                @PropertyOption(name = "SSI", value = "Apache SSI"),
-                @PropertyOption(name = "ESI", value = "ESI"),
+                @PropertyOption(name = "SSI", value = "Apache SSI"), @PropertyOption(name = "ESI", value = "ESI"),
                 @PropertyOption(name = "JSI", value = "Javascript") }),
         @Property(name = Configuration.PROPERTY_ADD_COMMENT, boolValue = Configuration.DEFAULT_ADD_COMMENT, label = "Add comment", description = "Add comment to included components"),
         @Property(name = Configuration.PROPERTY_FILTER_SELECTOR, value = Configuration.DEFAULT_FILTER_SELECTOR, label = "Filter selector", description = "Selector used to mark included resources"),
@@ -118,14 +117,10 @@ public class Configuration {
 
     @Activate
     public void activate(ComponentContext context, Map<String, ?> properties) {
-        isEnabled = PropertiesUtil
-                .toBoolean(properties.get(PROPERTY_FILTER_ENABLED),
-                        DEFAULT_FILTER_ENABLED);
-        path = PropertiesUtil.toString(properties.get(PROPERTY_FILTER_PATH),
-                DEFAULT_FILTER_PATH);
+        isEnabled = PropertiesUtil.toBoolean(properties.get(PROPERTY_FILTER_ENABLED), DEFAULT_FILTER_ENABLED);
+        path = PropertiesUtil.toString(properties.get(PROPERTY_FILTER_PATH), DEFAULT_FILTER_PATH);
         String[] resourceTypeList;
-        resourceTypeList = PropertiesUtil.toStringArray(
-                properties.get(PROPERTY_FILTER_RESOURCE_TYPES), new String[0]);
+        resourceTypeList = PropertiesUtil.toStringArray(properties.get(PROPERTY_FILTER_RESOURCE_TYPES), new String[0]);
         for (int i = 0; i < resourceTypeList.length; i++) {
             String[] s = resourceTypeList[i].split(";");
             String name = s[0].trim();
@@ -133,23 +128,14 @@ public class Configuration {
         }
         this.resourceTypes = Arrays.asList(resourceTypeList);
 
-        includeSelector = PropertiesUtil.toString(
-                properties.get(PROPERTY_FILTER_SELECTOR),
-                DEFAULT_FILTER_SELECTOR);
-        ttl = PropertiesUtil.toInteger(properties.get(PROPERTY_COMPONENT_TTL),
-                -1);
-        addComment = PropertiesUtil.toBoolean(
-                properties.get(PROPERTY_ADD_COMMENT), DEFAULT_ADD_COMMENT);
-        includeTypeName = PropertiesUtil.toString(
-                properties.get(PROPERTY_INCLUDE_TYPE), DEFAULT_INCLUDE_TYPE);
-        requiredHeader = PropertiesUtil.toString(
-                properties.get(PROPERTY_REQUIRED_HEADER),
-                DEFAULT_REQUIRED_HEADER);
-        ignoreUrlParams = Arrays.asList(PropertiesUtil.toStringArray(
-                properties.get(PROPERTY_IGNORE_URL_PARAMS), new String[0]));
-        rewritePath = PropertiesUtil
-                .toBoolean(properties.get(PROPERTY_REWRITE_PATH),
-                        DEFAULT_REWRITE_DISABLED);
+        includeSelector = PropertiesUtil.toString(properties.get(PROPERTY_FILTER_SELECTOR), DEFAULT_FILTER_SELECTOR);
+        ttl = PropertiesUtil.toInteger(properties.get(PROPERTY_COMPONENT_TTL), -1);
+        addComment = PropertiesUtil.toBoolean(properties.get(PROPERTY_ADD_COMMENT), DEFAULT_ADD_COMMENT);
+        includeTypeName = PropertiesUtil.toString(properties.get(PROPERTY_INCLUDE_TYPE), DEFAULT_INCLUDE_TYPE);
+        requiredHeader = PropertiesUtil.toString(properties.get(PROPERTY_REQUIRED_HEADER), DEFAULT_REQUIRED_HEADER);
+        ignoreUrlParams = Arrays.asList(PropertiesUtil.toStringArray(properties.get(PROPERTY_IGNORE_URL_PARAMS),
+                new String[0]));
+        rewritePath = PropertiesUtil.toBoolean(properties.get(PROPERTY_REWRITE_PATH), DEFAULT_REWRITE_DISABLED);
     }
 
     public String getBasePath() {
@@ -157,8 +143,7 @@ public class Configuration {
     }
 
     public boolean hasIncludeSelector(SlingHttpServletRequest request) {
-        return ArrayUtils.contains(request.getRequestPathInfo().getSelectors(),
-                includeSelector);
+        return ArrayUtils.contains(request.getRequestPathInfo().getSelectors(), includeSelector);
     }
 
     public String getIncludeSelector() {
@@ -174,8 +159,7 @@ public class Configuration {
     }
 
     public boolean isSupportedResourceType(String resourceType) {
-        return StringUtils.isNotBlank(resourceType)
-                && resourceTypes.contains(resourceType);
+        return StringUtils.isNotBlank(resourceType) && resourceTypes.contains(resourceType);
     }
 
     public boolean getAddComment() {

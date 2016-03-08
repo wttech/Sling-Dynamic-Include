@@ -50,8 +50,7 @@ import org.slf4j.LoggerFactory;
 @SlingFilter(scope = SlingFilterScope.INCLUDE, order = -500)
 public class IncludeTagWritingFilter implements Filter {
 
-    private static final Logger LOG = LoggerFactory
-            .getLogger(IncludeTagWritingFilter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(IncludeTagWritingFilter.class);
 
     private static final String COMMENT = "<!-- SDI include (path: %s, resourceType: %s) -->\n";
 
@@ -62,21 +61,18 @@ public class IncludeTagWritingFilter implements Filter {
     private IncludeGeneratorWhiteboard generatorWhiteboard;
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response,
-            FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
+            ServletException {
         final SlingHttpServletRequest slingRequest = (SlingHttpServletRequest) request;
-        final String resourceType = slingRequest.getResource()
-                .getResourceType();
+        final String resourceType = slingRequest.getResource().getResourceType();
 
-        final Configuration config = configurationWhiteboard.getConfiguration(
-                slingRequest, resourceType);
+        final Configuration config = configurationWhiteboard.getConfiguration(slingRequest, resourceType);
         if (config == null) {
             chain.doFilter(request, response);
             return;
         }
 
-        final IncludeGenerator generator = generatorWhiteboard
-                .getGenerator(config.getIncludeTypeName());
+        final IncludeGenerator generator = generatorWhiteboard.getGenerator(config.getIncludeTypeName());
         if (generator == null) {
             LOG.error("Invalid generator: " + config.getIncludeTypeName());
             chain.doFilter(request, response);
@@ -91,8 +87,7 @@ public class IncludeTagWritingFilter implements Filter {
         }
 
         if (config.getAddComment()) {
-            writer.append(String.format(COMMENT,
-                    StringEscapeUtils.escapeHtml(url), resourceType));
+            writer.append(String.format(COMMENT, StringEscapeUtils.escapeHtml(url), resourceType));
         }
 
         // Only write the includes markup if the required, configurable request
@@ -106,18 +101,15 @@ public class IncludeTagWritingFilter implements Filter {
         }
     }
 
-    private boolean shouldWriteIncludes(Configuration config,
-            SlingHttpServletRequest request) {
+    private boolean shouldWriteIncludes(Configuration config, SlingHttpServletRequest request) {
         if (requestHasParameters(config.getIgnoreUrlParams(), request)) {
             return false;
         }
         final String requiredHeader = config.getRequiredHeader();
-        return StringUtils.isBlank(requiredHeader)
-                || containsHeader(requiredHeader, request);
+        return StringUtils.isBlank(requiredHeader) || containsHeader(requiredHeader, request);
     }
 
-    private boolean requestHasParameters(List<String> ignoreUrlParams,
-            SlingHttpServletRequest request) {
+    private boolean requestHasParameters(List<String> ignoreUrlParams, SlingHttpServletRequest request) {
         final Enumeration<?> paramNames = request.getParameterNames();
         while (paramNames.hasMoreElements()) {
             final String paramName = (String) paramNames.nextElement();
@@ -128,8 +120,7 @@ public class IncludeTagWritingFilter implements Filter {
         return false;
     }
 
-    private boolean containsHeader(String requiredHeader,
-            SlingHttpServletRequest request) {
+    private boolean containsHeader(String requiredHeader, SlingHttpServletRequest request) {
         final String name, expectedValue;
         if (StringUtils.contains(requiredHeader, '=')) {
             final String split[] = StringUtils.split(requiredHeader, '=');
@@ -168,10 +159,8 @@ public class IncludeTagWritingFilter implements Filter {
         return url;
     }
 
-    private String buildUrl(Configuration config,
-            SlingHttpServletRequest request) {
-        final boolean synthetic = ResourceUtil.isSyntheticResource(request
-                .getResource());
+    private String buildUrl(Configuration config, SlingHttpServletRequest request) {
+        final boolean synthetic = ResourceUtil.isSyntheticResource(request.getResource());
         final Resource resource = request.getResource();
         final StringBuilder builder = new StringBuilder();
         final RequestPathInfo pathInfo = request.getRequestPathInfo();

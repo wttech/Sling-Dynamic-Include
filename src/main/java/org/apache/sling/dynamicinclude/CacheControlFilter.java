@@ -41,27 +41,22 @@ public class CacheControlFilter implements Filter {
 
     private static final String HEADER_CACHE_CONTROL = "Cache-Control";
 
-    private static final Logger LOG = LoggerFactory
-            .getLogger(CacheControlFilter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CacheControlFilter.class);
 
     @Reference
     private ConfigurationWhiteboard configurationWhiteboard;
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response,
-            FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
+            ServletException {
         final SlingHttpServletRequest slingRequest = (SlingHttpServletRequest) request;
-        final String resourceType = slingRequest.getResource()
-                .getResourceType();
-        final Configuration config = configurationWhiteboard.getConfiguration(
-                slingRequest, resourceType);
+        final String resourceType = slingRequest.getResource().getResourceType();
+        final Configuration config = configurationWhiteboard.getConfiguration(slingRequest, resourceType);
 
         if (config != null && config.hasTtlSet()) {
             SlingHttpServletResponse slingResponse = (SlingHttpServletResponse) response;
-            slingResponse.setHeader(HEADER_CACHE_CONTROL,
-                    "max-age=" + config.getTtl());
-            LOG.debug("set \"{}: max-age={}\" to {}", HEADER_CACHE_CONTROL,
-                    config.getTtl(), resourceType);
+            slingResponse.setHeader(HEADER_CACHE_CONTROL, "max-age=" + config.getTtl());
+            LOG.debug("set \"{}: max-age={}\" to {}", HEADER_CACHE_CONTROL, config.getTtl(), resourceType);
         }
 
         chain.doFilter(request, response);
