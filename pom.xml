@@ -33,7 +33,7 @@
     <packaging>bundle</packaging>
     
     <name>Sling Dynamic Include</name>
-    <description>Dynamic include filter for Apache Sling</description>
+    <description>Dynamic Include filter for Apache Sling</description>
 
     <scm>
         <connection>scm:svn:http://svn.apache.org/repos/asf/sling/trunk/contrib/extensions/dynamic-include</connection>

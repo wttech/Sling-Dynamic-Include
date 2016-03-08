@@ -48,9 +48,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @SlingFilter(scope = SlingFilterScope.INCLUDE, order = -500)
-public class IncludeTagWritingFilter implements Filter {
+public class IncludeTagFilter implements Filter {
 
-    private static final Logger LOG = LoggerFactory.getLogger(IncludeTagWritingFilter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(IncludeTagFilter.class);
 
     private static final String COMMENT = "<!-- SDI include (path: %s, resourceType: %s) -->\n";
 
