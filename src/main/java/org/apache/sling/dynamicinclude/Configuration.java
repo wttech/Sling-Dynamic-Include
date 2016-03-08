@@ -25,10 +25,10 @@ import org.osgi.service.component.ComponentContext;
  * 
  */
 @Component(metatype = true, configurationFactory = true, 
-	label = "Cognifide : SDI : Configuration", immediate = true, policy = ConfigurationPolicy.REQUIRE)
+	label = "Sling Dynamic Include : Configuration", immediate = true, policy = ConfigurationPolicy.REQUIRE)
 @Service(Configuration.class)
 @Properties({
-	@Property(name = Constants.SERVICE_VENDOR, value = "Cognifide"),
+	@Property(name = Constants.SERVICE_VENDOR, value = "The Apache Software Foundation"),
 	@Property(name = Configuration.PROPERTY_FILTER_ENABLED, boolValue = Configuration.DEFAULT_FILTER_ENABLED, label = "Enabled", description = "Check to enable the filter"),
 	@Property(name = Configuration.PROPERTY_FILTER_PATH, value = Configuration.DEFAULT_FILTER_PATH, label = "Base path", description = "This SDI configuration will work only for this path"),
 	@Property(name = Configuration.PROPERTY_FILTER_RESOURCE_TYPES, cardinality = Integer.MAX_VALUE, label = "Resource types", description = "Filter will replace components with selected resource types"),

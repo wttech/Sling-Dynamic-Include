@@ -22,12 +22,12 @@ import org.apache.sling.api.resource.ResourceUtil;
 import org.apache.sling.engine.EngineConstants;
 import org.osgi.framework.Constants;
 
-@Component(metatype = true, label="Cognifide : SDI : Synthetic Resource Include Filter")
+@Component(metatype = true, label="Sling Dynamic Include : Synthetic Resource Include Filter")
 @Service
 @Properties({
-	@Property(name = Constants.SERVICE_VENDOR, value = "Cognifide"),
+	@Property(name = Constants.SERVICE_VENDOR, value = "The Apache Software Foundation"),
 	@Property(name = EngineConstants.SLING_FILTER_SCOPE, value = EngineConstants.FILTER_SCOPE_REQUEST, propertyPrivate = true),
-	@Property(name = Constants.SERVICE_RANKING, intValue = Integer.MIN_VALUE, description = "< -2500 after 6.0 SP2, > -2500 before SP2 ", propertyPrivate = false),
+	@Property(name = Constants.SERVICE_RANKING, intValue = Integer.MIN_VALUE, propertyPrivate = false),
 })
 public class SyntheticResourceIncludingFilter implements Filter {
 
