@@ -41,7 +41,7 @@ import org.apache.sling.api.resource.ResourceUtil;
 import org.apache.sling.engine.EngineConstants;
 import org.osgi.framework.Constants;
 
-@Component(metatype = true, label = "Sling Dynamic Include : Synthetic Resource Filter")
+@Component(metatype = true, label = "Apache Sling Dynamic Include - Synthetic Resource Filter")
 @Service
 @Properties({
         @Property(name = Constants.SERVICE_VENDOR, value = "The Apache Software Foundation"),

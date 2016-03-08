@@ -43,7 +43,7 @@ import org.osgi.service.component.ComponentContext;
  * @author tomasz.rekawek
  * 
  */
-@Component(metatype = true, configurationFactory = true, label = "Sling Dynamic Include : Configuration", immediate = true, policy = ConfigurationPolicy.REQUIRE)
+@Component(metatype = true, configurationFactory = true, label = "Apache Sling Dynamic Include - Configuration", immediate = true, policy = ConfigurationPolicy.REQUIRE)
 @Service(Configuration.class)
 @Properties({
         @Property(name = Constants.SERVICE_VENDOR, value = "The Apache Software Foundation"),
