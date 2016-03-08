@@ -18,9 +18,9 @@ Components don't have to be modified in order to use this module (or even aware 
 Add following dependency to your project:
 
     <dependency>
-	    <groupId>com.cognifide.cq</groupId>
-	    <artifactId>sling-dynamic-include</artifactId>
-	    <version>2.0.4</version>
+	    <groupId>org.apache.sling</groupId>
+	    <artifactId>dynamic-include</artifactId>
+	    <version>2.2.0</version>
     </dependency>
 
 ## Configuration
@@ -143,17 +143,6 @@ Selector is necessary, because otherwise filter would again replace component wi
 * [SDI presentation](http://www.pro-vision.de/content/medialib/pro-vision/production/adaptto/2012/adaptto2012-sling-dynamic-include-tomasz-rekaweki-pdf/_jcr_content/renditions/rendition.file/adaptto2012-sling-dynamic-include-tomasz-rekaweki.pdf) on [adaptTo() 2012](http://www.pro-vision.de/de/adaptto/adaptto-2012.html)
 * [SDI blog](http://www.cognifide.com/blogs/cq/sling-dynamic-include/) post on the Cognifide website
 * See the [Apache Sling website](http://sling.apache.org/) for the Sling reference documentation. Apache Sling, Apache and Sling are trademarks of the [Apache Software Foundation](http://apache.org).
-
-# Commercial Support
-
-Technical support can be made available if needed. Please [contact us](mailto:labs-support@cognifide.com) for more details.
-
-We can:
-
-* prioritize your feature request,
-* tailor the product to your needs,
-* provide a training for your engineers,
-* support your development teams.
 
 # Release notes
 
