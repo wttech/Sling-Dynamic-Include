@@ -144,19 +144,12 @@ Selector is necessary, because otherwise filter would again replace component wi
 * [SDI blog](http://www.cognifide.com/blogs/cq/sling-dynamic-include/) post on the Cognifide website
 * See the [Apache Sling website](http://sling.apache.org/) for the Sling reference documentation. Apache Sling, Apache and Sling are trademarks of the [Apache Software Foundation](http://apache.org).
 
-# Commercial Support
-
-Technical support can be made available if needed. Please [contact us](mailto:labs-support@cognifide.com) for more details.
-
-We can:
-
-* prioritize your feature request,
-* tailor the product to your needs,
-* provide a training for your engineers,
-* support your development teams.
-
 # Release notes
 
 ## 2.2.0
 
 \#17 Support for time-based (TTL) caching, Dispatcher 4.1.11+ required
+
+# Integrated with Sling
+
+Sling Dynamin Include (SDI) project has been contributed to the Apache Sling project as [an extension](https://github.com/apache/sling/tree/trunk/contrib/extensions/sling-dynamic-include). This Github project has been left as an information hub.
