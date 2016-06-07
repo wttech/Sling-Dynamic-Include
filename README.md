@@ -152,4 +152,7 @@ Selector is necessary, because otherwise filter would again replace component wi
 
 # Integrated with Sling
 
-Sling Dynamin Include (SDI) project has been contributed to the Apache Sling project as [an extension](https://github.com/apache/sling/tree/trunk/contrib/extensions/sling-dynamic-include). This Github project has been left as an information hub.
+Sling Dynamic Include (SDI) project has been contributed to the Apache Sling project as [an extension](https://github.com/apache/sling/tree/trunk/contrib/extensions/sling-dynamic-include).
+See the official [announcement](https://www.cognifide.com/our-blogs/cq/contributing-sling-dynamic-include-to-apache-sling) on the Cognifide website.
+
+This Github project has been left as an information hub.
