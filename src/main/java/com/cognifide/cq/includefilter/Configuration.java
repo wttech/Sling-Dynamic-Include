@@ -41,7 +41,8 @@ import org.osgi.service.component.ComponentContext;
 	@Property(name = Configuration.PROPERTY_COMPONENT_TTL, label = "Component TTL", description = "\"Time to live\" cache header for rendered component (in seconds)"),
 	@Property(name = Configuration.PROPERTY_REQUIRED_HEADER, value = Configuration.DEFAULT_REQUIRED_HEADER, label = "Required header", description = "SDI will work only for requests with given header"),
 	@Property(name = Configuration.PROPERTY_IGNORE_URL_PARAMS, cardinality = Integer.MAX_VALUE, label = "Ignore URL params", description = "SDI will process the request even if it contains configured GET parameters"),
-	@Property(name = Configuration.PROPERTY_REWRITE_PATH, boolValue = Configuration.DEFAULT_REWRITE_DISABLED, label = "Include path rewriting", description = "Check to enable include path rewriting")
+	@Property(name = Configuration.PROPERTY_REWRITE_PATH, boolValue = Configuration.DEFAULT_REWRITE_DISABLED, label = "Include path rewriting", description = "Check to enable include path rewriting"),
+	@Property(name = Configuration.PROPERTY_SKIP_ALL_URL_PARAMS, boolValue = Configuration.DEFAULT_SKIP_ALL_URL_PARAMS, label = "Skip URL params", description = "SDI will process the request regardless any GET parameters")
 })
 public class Configuration {
 
@@ -78,7 +79,11 @@ public class Configuration {
 	static final String PROPERTY_REWRITE_PATH = "include-filter.config.rewrite";
 	
 	static final boolean DEFAULT_REWRITE_DISABLED = false;
-	
+
+	static final String PROPERTY_SKIP_ALL_URL_PARAMS = "include-filter.config.skipAllUrlParams";
+
+	static final boolean DEFAULT_SKIP_ALL_URL_PARAMS = false;
+
 	private boolean isEnabled;
 
 	private String path;
@@ -98,6 +103,8 @@ public class Configuration {
 	private List<String> ignoreUrlParams;
 	
 	private boolean rewritePath;
+
+	private boolean skipAllUrlParams;
 
 	@Activate
 	public void activate(ComponentContext context, Map<String, ?> properties) {
@@ -122,6 +129,7 @@ public class Configuration {
 				DEFAULT_REQUIRED_HEADER);
 		ignoreUrlParams = Arrays.asList(PropertiesUtil.toStringArray(properties.get(PROPERTY_IGNORE_URL_PARAMS), new String[0]));
 		rewritePath = PropertiesUtil.toBoolean(properties.get(PROPERTY_REWRITE_PATH), DEFAULT_REWRITE_DISABLED);
+		skipAllUrlParams = PropertiesUtil.toBoolean(properties.get(PROPERTY_SKIP_ALL_URL_PARAMS), DEFAULT_SKIP_ALL_URL_PARAMS);
 	}
 
 	public String getBasePath() {
@@ -170,5 +178,9 @@ public class Configuration {
 
 	public boolean isRewritePath() {
 		return rewritePath;
+	}
+
+	public boolean isSkipAllUrlParams() {
+		return skipAllUrlParams;
 	}
 }

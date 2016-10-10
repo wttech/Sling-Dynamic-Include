@@ -83,7 +83,7 @@ public class IncludeTagWritingFilter implements Filter {
 	}
 
 	private boolean shouldWriteIncludes(Configuration config, SlingHttpServletRequest request) {
-		if (requestHasParameters(config.getIgnoreUrlParams(), request)) {
+		if (!config.isSkipAllUrlParams() && requestHasParameters(config.getIgnoreUrlParams(), request)) {
 			return false;
 		}
 		final String requiredHeader = config.getRequiredHeader();
