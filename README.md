@@ -1,5 +1,15 @@
 # Sling Dynamic Include
 
+___
+**Now part of Sling**
+
+Sling Dynamic Include (SDI) project has been contributed to the Apache Sling project as [an extension](https://github.com/apache/sling/tree/trunk/contrib/extensions/sling-dynamic-include).
+
+SDI is not longer maintained here - this Github project has been left as an information hub only. All tickets should be raised in Sling jira.
+___
+
+
+
 ## Purpose
 
 The purpose of the module presented here is to replace dynamic generated components (eg. current time or foreign exchange rates) with server-side include tag (eg. [SSI](http://httpd.apache.org/docs/current/howto/ssi.html) or [ESI](http://www.w3.org/TR/esi-lang)). Therefore the dispatcher is able to cache the whole page but dynamic components are generated and included with every request. Components to include are chosen in filter configuration using `resourceType` attribute.
