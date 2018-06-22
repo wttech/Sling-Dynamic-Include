@@ -1,11 +1,11 @@
 # Sling Dynamic Include
 
 ___
-**Now part of Sling**
+**Now part of Apache Sling**
 
-Sling Dynamic Include (SDI) project has been contributed to the Apache Sling project as [an extension](https://github.com/apache/sling/tree/trunk/contrib/extensions/sling-dynamic-include).
+Sling Dynamic Include (SDI) project has been [contributed to the Apache Sling project](https://github.com/apache/sling-org-apache-sling-dynamic-include).
 
-SDI is not longer maintained here - this Github project has been left as an information hub only. All tickets should be raised in Sling jira.
+**SDI is no longer maintained here** - this Github project has been left as an information hub only. All tickets should be raised in the [Apache Sling jira](https://issues.apache.org/jira/projects/SLING).
 ___
 
 
