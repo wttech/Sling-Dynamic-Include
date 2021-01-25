@@ -132,7 +132,7 @@ In this case, component is replaced with include tag, and `nocache` selector is 
     
 If the filter gets request with selector it'll pass it (using `doChain`) further without taking any action.
 
-![Plain include](https://raw.github.com/Cognifide/Sling-Dynamic-Include/master/src/main/doc/plain-include.png)
+![Plain include](https://raw.github.com/wttech/Sling-Dynamic-Include/master/src/main/doc/plain-include.png)
 
 There are also components which are created from so-called synthetic resources. Synthetic resource have some resourceType and path, but they don't have any node is JCR repository. An example is
 
